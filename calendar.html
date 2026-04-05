@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>节日日历</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3>节日日历</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <button class="month-btn" onclick="changeMonth(-1)">‹</button>
+                <h4 id="currentMonth">2026年4月</h4>
+                <button class="month-btn" onclick="changeMonth(1)">›</button>
+            </div>
+
+            <div class="weekdays" id="weekdays">
+                <div class="weekday">日</div>
+                <div class="weekday">一</div>
+                <div class="weekday">二</div>
+                <div class="weekday">三</div>
+                <div class="weekday">四</div>
+                <div class="weekday">五</div>
+                <div class="weekday">六</div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid">
+            </div>
+
+            <div class="festival-tips" id="festivalTips">
+                <h5>今日节日</h5>
+                <p id="todayFestivals">今天没有特别的节日</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        const festivalDates = {
+            'Spring Festival': { month: 2, day: 1, zh: '春节', en: 'Spring Festival' },
+            'Mid-Autumn Festival': { month: 9, day: 15, zh: '中秋节', en: 'Mid-Autumn Festival' },
+            'Dragon Boat Festival': { month: 6, day: 5, zh: '端午节', en: 'Dragon Boat Festival' },
+            'Lantern Festival': { month: 2, day: 15, zh: '元宵节', en: 'Lantern Festival' },
+            'Double Ninth Festival': { month: 10, day: 9, zh: '重阳节', en: 'Double Ninth Festival' },
+            'Winter Solstice': { month: 12, day: 21, zh: '冬至', en: 'Winter Solstice' },
+            'Qingming Festival': { month: 4, day: 4, zh: '清明节', en: 'Qingming Festival' },
+            'Ghost Festival': { month: 8, day: 15, zh: '中元节', en: 'Ghost Festival' },
+            'Qixi Festival': { month: 8, day: 7, zh: '七夕节', en: 'Qixi Festival' }
+        };
+
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
+
+        function generateCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const currentMonthEl = document.getElementById('currentMonth');
+            const lang = getCurrentLang();
+            
+            const monthNamesZh = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+            const monthNamesEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            if (lang === 'zh') {
+                currentMonthEl.textContent = `${currentYear}年${monthNamesZh[currentMonth]}`;
+            } else {
+                currentMonthEl.textContent = `${monthNamesEn[currentMonth]} ${currentYear}`;
+            }
+
+            calendarGrid.innerHTML = '';
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                calendarGrid.appendChild(emptyDay);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+                dayEl.textContent = day;
+
+                const isToday = currentYear === new Date().getFullYear() && 
+                              currentMonth === new Date().getMonth() && 
+                              day === new Date().getDate();
+                if (isToday) {
+                    dayEl.classList.add('today');
+                }
+
+                for (const [festival, date] of Object.entries(festivalDates)) {
+                    if (date.month === currentMonth + 1 && date.day === day) {
+                        dayEl.classList.add('festival-day');
+                        dayEl.title = getFestivalName(festival);
+                        dayEl.onclick = () => goDetail(festival);
+                        break;
+                    }
+                }
+
+                calendarGrid.appendChild(dayEl);
+            }
+
+            updateTodayFestivals();
+            updateWeekdays();
+        }
+
+        function getFestivalName(festival) {
+            const lang = getCurrentLang();
+            return festivalDates[festival][lang];
+        }
+
+        function updateWeekdays() {
+            const weekdays = document.getElementById('weekdays');
+            const lang = getCurrentLang();
+            const weekdayNamesZh = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekdayNamesEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            
+            weekdays.innerHTML = '';
+            const names = lang === 'zh' ? weekdayNamesZh : weekdayNamesEn;
+            names.forEach(name => {
+                const weekdayEl = document.createElement('div');
+                weekdayEl.className = 'weekday';
+                weekdayEl.textContent = name;
+                weekdays.appendChild(weekdayEl);
+            });
+        }
+
+        function updateTodayFestivals() {
+            const today = new Date();
+            const todayMonth = today.getMonth() + 1;
+            const todayDay = today.getDate();
+            const todayFestivalsEl = document.getElementById('todayFestivals');
+            const lang = getCurrentLang();
+
+            let todayFestivals = [];
+            for (const [festival, date] of Object.entries(festivalDates)) {
+                if (date.month === todayMonth && date.day === todayDay) {
+                    todayFestivals.push({name: festival, displayName: getFestivalName(festival)});
+                }
+            }
+
+            if (todayFestivals.length > 0) {
+                let html = lang === 'zh' ? '今天是：' : 'Today is: ';
+                todayFestivals.forEach((festival, index) => {
+                    if (index > 0) {
+                        html += lang === 'zh' ? '、' : ', ';
+                    }
+                    html += `<span onclick="goDetail('${festival.name}')" style="color: #C9373A; cursor: pointer;">${festival.displayName}</span>`;
+                });
+                todayFestivalsEl.innerHTML = html;
+            } else {
+                todayFestivalsEl.textContent = lang === 'zh' ? '今天没有特别的节日' : 'No special festivals today';
+            }
+        }
+
+        function changeMonth(direction) {
+            currentMonth += direction;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        }
+
+        window.onload = function() {
+            loadLangData();
+            generateCalendar();
+        };
+    </script>
+</body>
+</html>

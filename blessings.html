@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>祝福语库</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3 class="zh">祝福语库</h3>
+            <h3 class="en hidden">Blessings</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="blessings-container" id="blessingsList">
+        </div>
+        <script src="js/app.js"></script>
+        <script>
+            const blessingsData = {
+                'Spring Festival': {
+                    zh: {
+                        name: '春节',
+                        blessings: [
+                            '新年快乐，万事如意！',
+                            '恭喜发财，大吉大利！',
+                            '心想事成，笑口常开！',
+                            '身体健康，阖家幸福！',
+                            '事业有成，财源广进！'
+                        ]
+                    },
+                    en: {
+                        name: 'Spring Festival',
+                        blessings: [
+                            'Happy New Year! All the best!',
+                            'Wishing you prosperity and good luck!',
+                            'May all your wishes come true!',
+                            'Good health and family happiness!',
+                            'Success in career and wealth!'
+                        ]
+                    }
+                },
+                'Mid-Autumn Festival': {
+                    zh: {
+                        name: '中秋节',
+                        blessings: [
+                            '中秋快乐，阖家团圆！',
+                            '月圆人圆，事事圆满！',
+                            '花好月圆，幸福美满！',
+                            '月饼甜甜，好事连连！',
+                            '中秋佳节，快乐无边！'
+                        ]
+                    },
+                    en: {
+                        name: 'Mid-Autumn Festival',
+                        blessings: [
+                            'Happy Mid-Autumn Festival!',
+                            'Full moon, full family, full happiness!',
+                            'Beautiful moon, happy life!',
+                            'Sweet mooncakes, sweet life!',
+                            'Mid-Autumn Festival, endless joy!'
+                        ]
+                    }
+                },
+                'Dragon Boat Festival': {
+                    zh: {
+                        name: '端午节',
+                        blessings: [
+                            '端午安康，平安顺遂！',
+                            '龙舟竞渡，气势如虹！',
+                            '粽子飘香，幸福满溢！',
+                            '端午佳节，吉祥如意！',
+                            '身体健康，万事如意！'
+                        ]
+                    },
+                    en: {
+                        name: 'Dragon Boat Festival',
+                        blessings: [
+                            'Happy Dragon Boat Festival!',
+                            'Dragon boat racing, full of energy!',
+                            'Zongzi fragrance, happiness overflowing!',
+                            'Dragon Boat Festival, good luck!',
+                            'Good health and all the best!'
+                        ]
+                    }
+                },
+                'Lantern Festival': {
+                    zh: {
+                        name: '元宵节',
+                        blessings: [
+                            '元宵快乐，团团圆圆！',
+                            '花灯璀璨，幸福美满！',
+                            '猜谜得福，好运连连！',
+                            '元宵佳节，快乐无边！',
+                            '月圆人圆，事事圆满！'
+                        ]
+                    },
+                    en: {
+                        name: 'Lantern Festival',
+                        blessings: [
+                            'Happy Lantern Festival!',
+                            'Bright lanterns, happy life!',
+                            'Guess riddles, get good luck!',
+                            'Lantern Festival, endless joy!',
+                            'Full moon, full family, full happiness!'
+                        ]
+                    }
+                },
+                'Winter Solstice': {
+                    zh: {
+                        name: '冬至',
+                        blessings: [
+                            '冬至快乐，温暖过冬！',
+                            '饺子汤圆，团团圆圆！',
+                            '冬日安康，幸福美满！',
+                            '冬至大如年，快乐似神仙！',
+                            '温暖过冬，健康常伴！'
+                        ]
+                    },
+                    en: {
+                        name: 'Winter Solstice',
+                        blessings: [
+                            'Happy Winter Solstice!',
+                            'Dumplings and tangyuan, family reunion!',
+                            'Warm winter, happy life!',
+                            'Winter Solstice is as important as New Year!',
+                            'Warm winter, good health!'
+                        ]
+                    }
+                },
+                'Qingming Festival': {
+                    zh: {
+                        name: '清明节',
+                        blessings: [
+                            '清明安康，缅怀先人！',
+                            '踏青赏花，心情愉悦！',
+                            '扫墓祭祖，慎终追远！',
+                            '清明时节，思念无限！',
+                            '春暖花开，一切安好！'
+                        ]
+                    },
+                    en: {
+                        name: 'Qingming Festival',
+                        blessings: [
+                            'Happy Qingming Festival!',
+                            'Spring outing, happy mood!',
+                            'Tomb sweeping, remember ancestors!',
+                            'Qingming season, endless thoughts!',
+                            'Spring blooms, all is well!'
+                        ]
+                    }
+                },
+                'Ghost Festival': {
+                    zh: {
+                        name: '中元节',
+                        blessings: [
+                            '中元安康，平安顺遂！',
+                            '祭祖祈福，心想事成！',
+                            '放河灯，寄思念！',
+                            '中元佳节，吉祥如意！',
+                            '平安夜，好运来！'
+                        ]
+                    },
+                    en: {
+                        name: 'Ghost Festival',
+                        blessings: [
+                            'Happy Ghost Festival!',
+                            'Ancestor worship, wishes come true!',
+                            'Release river lanterns, send thoughts!',
+                            'Ghost Festival, good luck!',
+                            'Safe night, good fortune!'
+                        ]
+                    }
+                },
+                'Qixi Festival': {
+                    zh: {
+                        name: '七夕节',
+                        blessings: [
+                            '七夕快乐，爱情美满！',
+                            '鹊桥相会，有情人终成眷属！',
+                            '爱情甜蜜，幸福长久！',
+                            '七夕佳节，浪漫无限！',
+                            '愿得一人心，白首不相离！'
+                        ]
+                    },
+                    en: {
+                        name: 'Qixi Festival',
+                        blessings: [
+                            'Happy Qixi Festival!',
+                            'Magpie bridge meeting, lovers unite!',
+                            'Sweet love, long happiness!',
+                            'Qixi Festival, endless romance!',
+                            'May you find true love!'
+                        ]
+                    }
+                },
+                'Double Ninth Festival': {
+                    zh: {
+                        name: '重阳节',
+                        blessings: [
+                            '重阳快乐，健康长寿！',
+                            '登高望远，心旷神怡！',
+                            '茱萸遍插，吉祥如意！',
+                            '重阳佳节，幸福安康！',
+                            '敬老爱老，传承美德！'
+                        ]
+                    },
+                    en: {
+                        name: 'Double Ninth Festival',
+                        blessings: [
+                            'Happy Double Ninth Festival!',
+                            'Climb high, broaden horizons!',
+                            'Wear dogwood, good luck!',
+                            'Double Ninth Festival, happiness and health!',
+                            'Respect the elderly, pass on virtues!'
+                        ]
+                    }
+                }
+            };
+
+            function loadBlessings() {
+                const blessingsList = document.getElementById('blessingsList');
+                const lang = localStorage.getItem('language') || 'zh';
+                blessingsList.innerHTML = '';
+                
+                for (const [festival, data] of Object.entries(blessingsData)) {
+                    const festivalInfo = data[lang];
+                    
+                    const section = document.createElement('div');
+                    section.className = 'blessing-section';
+                    section.innerHTML = `
+                        <h4>${festivalInfo.name}</h4>
+                        <div class="blessing-items">
+                            ${festivalInfo.blessings.map(blessing => `
+                                <div class="blessing-item">
+                                    <p>${blessing}</p>
+                                    <button class="copy-btn" onclick="copyBlessing('${blessing}')">📋</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    blessingsList.appendChild(section);
+                }
+            }
+
+            function copyBlessing(blessing) {
+                navigator.clipboard.writeText(blessing).then(() => {
+                    const lang = localStorage.getItem('language') || 'zh';
+                    showToast(lang === 'zh' ? '已复制到剪贴板' : 'Copied to clipboard');
+                });
+            }
+
+            window.onload = function() {
+                updateLanguageDisplay();
+                updateLanguageButtons();
+                loadBlessings();
+            };
+        </script>
+    </div>
+</body>
+</html>

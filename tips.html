@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>文化避坑指南</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3 class="zh">文化避坑指南</h3>
+            <h3 class="en hidden">Tips</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips-container" id="tipsList">
+        </div>
+        <script src="js/app.js"></script>
+        <script>
+            const tipsData = {
+                'Spring Festival': {
+                    zh: {
+                        name: '春节',
+                        tips: [
+                            '不要说不吉利的话',
+                            '不要打破东西',
+                            '不要扫地（会扫走财运）',
+                            '不要讨债',
+                            '要给长辈拜年',
+                            '红包要双手递',
+                            '年初一不要洗头'
+                        ]
+                    },
+                    en: {
+                        name: 'Spring Festival',
+                        tips: [
+                            'Don\'t say unlucky words',
+                            'Don\'t break things',
+                            'Don\'t sweep the floor (will sweep away luck)',
+                            'Don\'t collect debts',
+                            'Pay New Year calls to elders',
+                            'Give red envelopes with both hands',
+                            'Don\'t wash hair on the first day'
+                        ]
+                    }
+                },
+                'Mid-Autumn Festival': {
+                    zh: {
+                        name: '中秋节',
+                        tips: [
+                            '不要用手指月亮',
+                            '要与家人一起赏月',
+                            '月饼要分享着吃',
+                            '不要说不吉利的话'
+                        ]
+                    },
+                    en: {
+                        name: 'Mid-Autumn Festival',
+                        tips: [
+                            'Don\'t point at the moon',
+                            'Enjoy the moon with family',
+                            'Share mooncakes',
+                            'Don\'t say unlucky words'
+                        ]
+                    }
+                },
+                'Dragon Boat Festival': {
+                    zh: {
+                        name: '端午节',
+                        tips: [
+                            '不要说不吉利的话',
+                            '要吃粽子',
+                            '可以挂艾草避邪',
+                            '不要在河边玩耍'
+                        ]
+                    },
+                    en: {
+                        name: 'Dragon Boat Festival',
+                        tips: [
+                            'Don\'t say unlucky words',
+                            'Eat zongzi',
+                            'Hang mugwort to ward off evil',
+                            'Don\'t play by the river'
+                        ]
+                    }
+                },
+                'Lantern Festival': {
+                    zh: {
+                        name: '元宵节',
+                        tips: [
+                            '不要说不吉利的话',
+                            '要吃元宵',
+                            '可以赏花灯',
+                            '不要太晚回家',
+                            '猜灯谜要文明'
+                        ]
+                    },
+                    en: {
+                        name: 'Lantern Festival',
+                        tips: [
+                            'Don\'t say unlucky words',
+                            'Eat yuanxiao',
+                            'Appreciate lanterns',
+                            'Don\'t stay out too late',
+                            'Guess riddles politely'
+                        ]
+                    }
+                },
+                'Winter Solstice': {
+                    zh: {
+                        name: '冬至',
+                        tips: [
+                            '要吃饺子或汤圆',
+                            '不要说不吉利的话',
+                            '可以祭祖',
+                            '要注意保暖'
+                        ]
+                    },
+                    en: {
+                        name: 'Winter Solstice',
+                        tips: [
+                            'Eat dumplings or tangyuan',
+                            'Don\'t say unlucky words',
+                            'Can worship ancestors',
+                            'Keep warm'
+                        ]
+                    }
+                },
+                'Qingming Festival': {
+                    zh: {
+                        name: '清明节',
+                        tips: [
+                            '要文明扫墓',
+                            '不要在墓地嬉笑打闹',
+                            '要注意防火',
+                            '可以踏青但不要破坏环境'
+                        ]
+                    },
+                    en: {
+                        name: 'Qingming Festival',
+                        tips: [
+                            'Tomb sweeping politely',
+                            'Don\'t play around in the cemetery',
+                            'Be careful with fire',
+                            'Spring outing but don\'t damage the environment'
+                        ]
+                    }
+                },
+                'Ghost Festival': {
+                    zh: {
+                        name: '中元节',
+                        tips: [
+                            '不要太晚回家',
+                            '不要去阴气重的地方',
+                            '要祭祖',
+                            '不要说不吉利的话',
+                            '可以放河灯但要注意安全'
+                        ]
+                    },
+                    en: {
+                        name: 'Ghost Festival',
+                        tips: [
+                            'Don\'t stay out too late',
+                            'Don\'t go to places with heavy yin energy',
+                            'Worship ancestors',
+                            'Don\'t say unlucky words',
+                            'Can release river lanterns but be safe'
+                        ]
+                    }
+                },
+                'Qixi Festival': {
+                    zh: {
+                        name: '七夕节',
+                        tips: [
+                            '可以乞巧',
+                            '要尊重传统习俗',
+                            '不要过度商业化',
+                            '情侣之间要互相尊重'
+                        ]
+                    },
+                    en: {
+                        name: 'Qixi Festival',
+                        tips: [
+                            'Can beg for skill',
+                            'Respect traditional customs',
+                            'Don\'t over commercialize',
+                            'Couples should respect each other'
+                        ]
+                    }
+                },
+                'Double Ninth Festival': {
+                    zh: {
+                        name: '重阳节',
+                        tips: [
+                            '要敬老爱老',
+                            '登高时注意安全',
+                            '不要说不吉利的话',
+                            '菊花酒要适量饮用',
+                            '要与家人一起过节'
+                        ]
+                    },
+                    en: {
+                        name: 'Double Ninth Festival',
+                        tips: [
+                            'Respect the elderly',
+                            'Be safe when climbing',
+                            'Don\'t say unlucky words',
+                            'Drink chrysanthemum wine in moderation',
+                            'Spend the festival with family'
+                        ]
+                    }
+                }
+            };
+
+            function loadTips() {
+                const tipsList = document.getElementById('tipsList');
+                const lang = localStorage.getItem('language') || 'zh';
+                tipsList.innerHTML = '';
+                
+                for (const [festival, data] of Object.entries(tipsData)) {
+                    const festivalInfo = data[lang];
+                    
+                    const section = document.createElement('div');
+                    section.className = 'tip-section';
+                    section.innerHTML = `
+                        <h4>${festivalInfo.name}</h4>
+                        <div class="tip-items">
+                            ${festivalInfo.tips.map((tip, index) => `
+                                <div class="tip-item">
+                                    <div class="tip-icon">⚠️</div>
+                                    <div class="tip-text">${tip}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    tipsList.appendChild(section);
+                }
+            }
+
+            window.onload = function() {
+                updateLanguageDisplay();
+                updateLanguageButtons();
+                loadTips();
+            };
+        </script>
+    </div>
+</body>
+</html>

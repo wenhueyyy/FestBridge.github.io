@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>必备物品</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3 class="zh">必备物品</h3>
+            <h3 class="en hidden">Items</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="items-container" id="itemsList">
+        </div>
+        <script src="js/app.js"></script>
+        <script>
+            const itemsData = {
+                'Spring Festival': {
+                    zh: {
+                        name: '春节',
+                        items: [
+                            '春联',
+                            '福字',
+                            '红包',
+                            '糖果',
+                            '饺子皮',
+                            '肉馅',
+                            '新衣'
+                        ]
+                    },
+                    en: {
+                        name: 'Spring Festival',
+                        items: [
+                            'Spring couplets',
+                            'Fu character',
+                            'Red envelopes',
+                            'Candy',
+                            'Dumpling wrappers',
+                            'Meat filling',
+                            'New clothes'
+                        ]
+                    }
+                },
+                'Mid-Autumn Festival': {
+                    zh: {
+                        name: '中秋节',
+                        items: [
+                            '月饼',
+                            '水果',
+                            '茶叶',
+                            '灯笼',
+                            '柚子'
+                        ]
+                    },
+                    en: {
+                        name: 'Mid-Autumn Festival',
+                        items: [
+                            'Mooncakes',
+                            'Fruits',
+                            'Tea',
+                            'Lanterns',
+                            'Pomelo'
+                        ]
+                    }
+                },
+                'Dragon Boat Festival': {
+                    zh: {
+                        name: '端午节',
+                        items: [
+                            '粽子',
+                            '艾草',
+                            '香囊',
+                            '雄黄酒',
+                            '龙舟道具'
+                        ]
+                    },
+                    en: {
+                        name: 'Dragon Boat Festival',
+                        items: [
+                            'Zongzi',
+                            'Mugwort',
+                            'Sachets',
+                            'Realgar wine',
+                            'Dragon boat props'
+                        ]
+                    }
+                },
+                'Lantern Festival': {
+                    zh: {
+                        name: '元宵节',
+                        items: [
+                            '元宵',
+                            '花灯',
+                            '灯谜',
+                            '烟花',
+                            '蜡烛'
+                        ]
+                    },
+                    en: {
+                        name: 'Lantern Festival',
+                        items: [
+                            'Yuanxiao',
+                            'Lanterns',
+                            'Lantern riddles',
+                            'Fireworks',
+                            'Candles'
+                        ]
+                    }
+                },
+                'Winter Solstice': {
+                    zh: {
+                        name: '冬至',
+                        items: [
+                            '饺子',
+                            '汤圆',
+                            '羊肉',
+                            '红枣',
+                            '桂圆'
+                        ]
+                    },
+                    en: {
+                        name: 'Winter Solstice',
+                        items: [
+                            'Dumplings',
+                            'Tangyuan',
+                            'Mutton',
+                            'Red dates',
+                            'Longan'
+                        ]
+                    }
+                },
+                'Qingming Festival': {
+                    zh: {
+                        name: '清明节',
+                        items: [
+                            '鲜花',
+                            '纸钱',
+                            '青团',
+                            '风筝',
+                            '祭品'
+                        ]
+                    },
+                    en: {
+                        name: 'Qingming Festival',
+                        items: [
+                            'Fresh flowers',
+                            'Paper money',
+                            'Qingtuan',
+                            'Kites',
+                            'Offerings'
+                        ]
+                    }
+                },
+                'Ghost Festival': {
+                    zh: {
+                        name: '中元节',
+                        items: [
+                            '纸钱',
+                            '河灯',
+                            '鸭子',
+                            '香烛',
+                            '祭品'
+                        ]
+                    },
+                    en: {
+                        name: 'Ghost Festival',
+                        items: [
+                            'Paper money',
+                            'River lanterns',
+                            'Duck',
+                            'Incense and candles',
+                            'Offerings'
+                        ]
+                    }
+                },
+                'Qixi Festival': {
+                    zh: {
+                        name: '七夕节',
+                        items: [
+                            '巧果',
+                            '鲜花',
+                            '礼物',
+                            '红线',
+                            '针线'
+                        ]
+                    },
+                    en: {
+                        name: 'Qixi Festival',
+                        items: [
+                            'Qiaoguo',
+                            'Fresh flowers',
+                            'Gifts',
+                            'Red thread',
+                            'Needles and thread'
+                        ]
+                    }
+                },
+                'Double Ninth Festival': {
+                    zh: {
+                        name: '重阳节',
+                        items: [
+                            '茱萸',
+                            '菊花',
+                            '菊花酒',
+                            '重阳糕',
+                            '登山装备',
+                            '敬老礼物'
+                        ]
+                    },
+                    en: {
+                        name: 'Double Ninth Festival',
+                        items: [
+                            'Dogwood',
+                            'Chrysanthemums',
+                            'Chrysanthemum wine',
+                            'Double Ninth cake',
+                            'Climbing gear',
+                            'Gifts for elders'
+                        ]
+                    }
+                }
+            };
+
+            function loadItems() {
+                const itemsList = document.getElementById('itemsList');
+                const lang = localStorage.getItem('language') || 'zh';
+                itemsList.innerHTML = '';
+                
+                for (const [festival, data] of Object.entries(itemsData)) {
+                    const festivalInfo = data[lang];
+                    
+                    const section = document.createElement('div');
+                    section.className = 'item-section';
+                    section.innerHTML = `
+                        <h4>${festivalInfo.name}</h4>
+                        <div class="item-items">
+                            ${festivalInfo.items.map((item, index) => `
+                                <div class="item-item">
+                                    <div class="item-checkbox">
+                                        <input type="checkbox" id="item-${festival}-${index}">
+                                        <label for="item-${festival}-${index}">${item}</label>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    itemsList.appendChild(section);
+                }
+            }
+
+            window.onload = function() {
+                updateLanguageDisplay();
+                updateLanguageButtons();
+                loadItems();
+            };
+        </script>
+    </div>
+</body>
+</html>

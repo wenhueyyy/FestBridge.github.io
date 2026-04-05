@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>即将到来</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3>即将到来</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="upcoming-container" id="upcomingList">
+        </div>
+        <script src="js/app.js"></script>
+        <script>
+            function loadUpcomingFestivals() {
+                const today = new Date();
+                const upcomingFestivals = [];
+                
+                const festivalDates = {
+                    'Spring Festival': { month: 2, day: 1, zh: '春节', en: 'Spring Festival' },
+                    'Mid-Autumn Festival': { month: 9, day: 15, zh: '中秋节', en: 'Mid-Autumn Festival' },
+                    'Dragon Boat Festival': { month: 6, day: 5, zh: '端午节', en: 'Dragon Boat Festival' },
+                    'Lantern Festival': { month: 2, day: 15, zh: '元宵节', en: 'Lantern Festival' },
+                    'Double Ninth Festival': { month: 10, day: 9, zh: '重阳节', en: 'Double Ninth Festival' },
+                    'Winter Solstice': { month: 12, day: 21, zh: '冬至', en: 'Winter Solstice' },
+                    'Qingming Festival': { month: 4, day: 4, zh: '清明节', en: 'Qingming Festival' },
+                    'Ghost Festival': { month: 8, day: 15, zh: '中元节', en: 'Ghost Festival' },
+                    'Qixi Festival': { month: 8, day: 7, zh: '七夕节', en: 'Qixi Festival' }
+                };
+                
+                for (const [festival, date] of Object.entries(festivalDates)) {
+                    const festivalDate = new Date(today.getFullYear(), date.month - 1, date.day);
+                    if (festivalDate < today) {
+                        festivalDate.setFullYear(today.getFullYear() + 1);
+                    }
+                    const daysUntil = Math.ceil((festivalDate - today) / (1000 * 60 * 60 * 24));
+                    upcomingFestivals.push({ name: festival, date: festivalDate, days: daysUntil, info: date });
+                }
+                
+                upcomingFestivals.sort((a, b) => a.days - b.days);
+                
+                const upcomingList = document.getElementById('upcomingList');
+                const lang = getCurrentLang();
+                upcomingList.innerHTML = '';
+                
+                upcomingFestivals.forEach((festival, index) => {
+                    const festivalName = festival.info[lang];
+                    const dateStr = lang === 'zh' ? 
+                        `${festival.date.getFullYear()}年${festival.date.getMonth() + 1}月${festival.date.getDate()}日` :
+                        `${festival.date.getMonth() + 1}/${festival.date.getDate()}/${festival.date.getFullYear()}`;
+                    
+                    const daysText = lang === 'zh' ? `${festival.days}天后` : `${festival.days} days later`;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'upcoming-item';
+                    item.onclick = () => goDetail(festival.name);
+                    item.innerHTML = `
+                        <div class="upcoming-rank">${index + 1}</div>
+                        <div class="upcoming-icon">${getFestivalIcon(festival.name)}</div>
+                        <div class="upcoming-info">
+                            <h4>${festivalName}</h4>
+                            <p>${dateStr}</p>
+                            <p class="days-count">${daysText}</p>
+                        </div>
+                    `;
+                    upcomingList.appendChild(item);
+                });
+            }
+
+            function getFestivalIcon(festivalName) {
+                const icons = {
+                    'Spring Festival': '🧧',
+                    'Mid-Autumn Festival': '🥮',
+                    'Dragon Boat Festival': '🐲',
+                    'Lantern Festival': '🏮',
+                    'Double Ninth Festival': '🍁',
+                    'Winter Solstice': '❄️',
+                    'Qingming Festival': '🌿',
+                    'Ghost Festival': '👻',
+                    'Qixi Festival': '❤️'
+                };
+                return icons[festivalName] || '🎊';
+            }
+
+            window.onload = function() {
+                loadLangData();
+                loadUpcomingFestivals();
+            };
+        </script>
+    </div>
+</body>
+</html>

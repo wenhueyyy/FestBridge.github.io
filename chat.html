@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>节日助手</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .chat-container {
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            height: calc(100vh - 100px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 12px;
+            background: #f9f9f9;
+        }
+        
+        .chat-message {
+            margin-bottom: 16px;
+            max-width: 80%;
+        }
+        
+        .chat-message.user {
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .chat-message.ai {
+            align-self: flex-start;
+        }
+        
+        .message-content {
+            padding: 12px;
+            border-radius: 12px;
+            line-height: 1.4;
+        }
+        
+        .chat-message.user .message-content {
+            background: #C9373A;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+        
+        .chat-message.ai .message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 8px;
+            padding: 10px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            outline: none;
+            font-size: 16px;
+        }
+        
+        .send-btn {
+            padding: 0 16px;
+            background: #C9373A;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .send-btn:hover {
+            background: #E54A4D;
+        }
+        
+        .stop-btn {
+            padding: 0 16px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .stop-btn:hover {
+            background: #888;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(201, 55, 58, 0.3);
+            border-radius: 50%;
+            border-top-color: #C9373A;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3>节日助手</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <!-- 欢迎消息 -->
+                <div class="chat-message ai">
+                    <div class="message-content">
+                        你好！我是节日助手，有什么可以帮助你的吗？
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="chat-input" placeholder="请输入你的问题..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendMessage()">➤</button>
+                <button class="stop-btn" onclick="stopMessage()">⏹</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // 聊天功能
+        let currentReader = null;
+        let currentMessageId = null;
+        
+        async function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            const sendBtn = document.querySelector('.send-btn');
+            const stopBtn = document.querySelector('.stop-btn');
+            
+            if (!message) return;
+            
+            // 禁用发送按钮，显示停止按钮
+            sendBtn.style.display = 'none';
+            stopBtn.style.display = 'flex';
+            
+            // 添加用户消息
+            addMessage('user', message);
+            input.value = '';
+            
+            // 显示加载状态
+            const loadingId = addMessage('ai', '<div class="loading"></div>');
+            
+            try {
+                // 模拟API响应，因为Coze云函数实例不存在
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // 移除加载消息
+                removeMessage(loadingId);
+                
+                // 简单的节日相关回复
+                let response = '';
+                const lowerMessage = message.toLowerCase();
+                
+                // 检测语言（简单判断：包含中文字符则认为是中文）
+                const isChinese = /[\u4e00-\u9fa5]/.test(message);
+                
+                // 检查具体问题类型
+                const isAskingWhen = lowerMessage.includes('when') || lowerMessage.includes('什么时候') || lowerMessage.includes('哪一天') || lowerMessage.includes('日期');
+                const isAskingCustoms = lowerMessage.includes('custom') || lowerMessage.includes('习俗') || lowerMessage.includes('传统') || lowerMessage.includes('习惯');
+                const isAskingGreetings = lowerMessage.includes('greet') || lowerMessage.includes('祝福') || lowerMessage.includes('祝福语') || lowerMessage.includes('问候');
+                const isAskingAbout = lowerMessage.includes('what') || lowerMessage.includes('是什么') || lowerMessage.includes('什么是') || lowerMessage.includes('关于');
+                
+                if (lowerMessage.includes('春节') || lowerMessage.includes('spring festival')) {
+                    if (isChinese) {
+                        if (isAskingWhen) {
+                            response = '春节通常在农历正月初一，公历日期每年不同，一般在1月21日至2月20日之间。';
+                        } else if (isAskingCustoms) {
+                            response = '春节的传统习俗包括：贴春联、放鞭炮、吃团圆饭、拜年、收压岁钱、舞龙舞狮等。';
+                        } else if (isAskingGreetings) {
+                            response = '春节的祝福语有：新年快乐、万事如意、恭喜发财、心想事成、身体健康等。';
+                        } else if (isAskingAbout) {
+                            response = '春节是中国最重要的传统节日，象征着新的开始和团圆。人们会在春节期间与家人团聚，庆祝新年的到来。';
+                        } else {
+                            response = '春节是中国最重要的传统节日，通常在农历正月初一庆祝。习俗包括贴春联、放鞭炮、吃团圆饭、拜年等。祝福语可以说：“新年快乐，万事如意！”';
+                        }
+                    } else {
+                        if (isAskingWhen) {
+                            response = 'The Spring Festival is usually on the first day of the lunar new year, which falls between January 21st and February 20th in the Gregorian calendar.';
+                        } else if (isAskingCustoms) {
+                            response = 'Spring Festival customs include: pasting spring couplets, setting off firecrackers, having a family reunion dinner, paying New Year\'s calls, receiving lucky money, and dragon/lion dances.';
+                        } else if (isAskingGreetings) {
+                            response = 'Spring Festival greetings include: Happy New Year, All the best, May you be prosperous, May all your wishes come true, Good health, etc.';
+                        } else if (isAskingAbout) {
+                            response = 'The Spring Festival is China\'s most important traditional festival, symbolizing new beginnings and family reunion. People gather with their families to celebrate the arrival of the new year.';
+                        } else {
+                            response = 'The Spring Festival is China\'s most important traditional festival, usually celebrated on the first day of the lunar new year. Customs include pasting spring couplets, setting off firecrackers, having a family reunion dinner, and paying New Year\'s calls. Greetings can be: "Happy New Year, all the best!"';
+                        }
+                    }
+                } else if (lowerMessage.includes('中秋') || lowerMessage.includes('mid-autumn')) {
+                    if (isChinese) {
+                        if (isAskingWhen) {
+                            response = '中秋节在农历八月十五，公历日期每年不同，一般在9月中旬至10月中旬之间。';
+                        } else if (isAskingCustoms) {
+                            response = '中秋节的传统习俗包括：赏月、吃月饼、家人团聚、燃灯、猜灯谜等。';
+                        } else if (isAskingGreetings) {
+                            response = '中秋节的祝福语有：中秋快乐、阖家团圆、月圆人圆、花好月圆、幸福美满等。';
+                        } else if (isAskingAbout) {
+                            response = '中秋节是中国的传统团圆节日，象征着家庭团聚和幸福美满。人们会在这一天赏月、吃月饼，与家人共度美好时光。';
+                        } else {
+                            response = '中秋节在农历八月十五，是团圆的节日。习俗包括赏月、吃月饼、家人团聚等。祝福语可以说：“中秋快乐，阖家团圆！”';
+                        }
+                    } else {
+                        if (isAskingWhen) {
+                            response = 'The Mid-Autumn Festival is on the 15th day of the 8th lunar month, which falls between mid-September and mid-October in the Gregorian calendar.';
+                        } else if (isAskingCustoms) {
+                            response = 'Mid-Autumn Festival customs include: admiring the moon, eating mooncakes, family reunions, lighting lanterns, and guessing lantern riddles.';
+                        } else if (isAskingGreetings) {
+                            response = 'Mid-Autumn Festival greetings include: Happy Mid-Autumn Festival, Family reunion, Full moon and full family, Beautiful moon and flowers, Happiness and harmony, etc.';
+                        } else if (isAskingAbout) {
+                            response = 'The Mid-Autumn Festival is a traditional Chinese festival of reunion, symbolizing family togetherness and happiness. People admire the moon, eat mooncakes, and spend quality time with their families.';
+                        } else {
+                            response = 'The Mid-Autumn Festival is on the 15th day of the 8th lunar month, a festival of reunion. Customs include admiring the moon, eating mooncakes, and family reunions. Greetings can be: "Happy Mid-Autumn Festival, family reunion!"';
+                        }
+                    }
+                } else if (lowerMessage.includes('端午') || lowerMessage.includes('dragon boat')) {
+                    if (isChinese) {
+                        if (isAskingWhen) {
+                            response = '端午节在农历五月初五，公历日期每年不同，一般在5月下旬至6月中旬之间。';
+                        } else if (isAskingCustoms) {
+                            response = '端午节的传统习俗包括：吃粽子、赛龙舟、挂艾草、喝雄黄酒、佩戴香囊等。';
+                        } else if (isAskingGreetings) {
+                            response = '端午节的祝福语有：端午安康、平安吉祥、身体健康、万事如意等。';
+                        } else if (isAskingAbout) {
+                            response = '端午节是为了纪念爱国诗人屈原，是中国重要的传统节日之一。人们会在这一天吃粽子、赛龙舟，以表达对屈原的敬意。';
+                        } else {
+                            response = '端午节在农历五月初五，是为了纪念屈原。习俗包括吃粽子、赛龙舟、挂艾草等。祝福语可以说：“端午安康！”';
+                        }
+                    } else {
+                        if (isAskingWhen) {
+                            response = 'The Dragon Boat Festival is on the 5th day of the 5th lunar month, which falls between late May and mid-June in the Gregorian calendar.';
+                        } else if (isAskingCustoms) {
+                            response = 'Dragon Boat Festival customs include: eating zongzi (sticky rice dumplings), dragon boat races, hanging mugwort, drinking realgar wine, and wearing sachets.';
+                        } else if (isAskingGreetings) {
+                            response = 'Dragon Boat Festival greetings include: Happy Dragon Boat Festival, Peace and good luck, Good health, All the best, etc.';
+                        } else if (isAskingAbout) {
+                            response = 'The Dragon Boat Festival is to commemorate the patriotic poet Qu Yuan, one of China\'s important traditional festivals. People eat zongzi and hold dragon boat races to express their respect for Qu Yuan.';
+                        } else {
+                            response = 'The Dragon Boat Festival is on the 5th day of the 5th lunar month, to commemorate Qu Yuan. Customs include eating zongzi, dragon boat races, and hanging mugwort. Greetings can be: "Happy Dragon Boat Festival!"';
+                        }
+                    }
+                } else if (lowerMessage.includes('重阳') || lowerMessage.includes('double ninth')) {
+                    if (isChinese) {
+                        if (isAskingWhen) {
+                            response = '重阳节在农历九月初九，公历日期每年不同，一般在10月上旬至11月上旬之间。';
+                        } else if (isAskingCustoms) {
+                            response = '重阳节的传统习俗包括：登高、插茱萸、赏菊花、饮菊花酒、吃重阳糕、敬老等。';
+                        } else if (isAskingGreetings) {
+                            response = '重阳节的祝福语有：重阳快乐、健康长寿、登高望远、万事如意、幸福安康等。';
+                        } else if (isAskingAbout) {
+                            response = '重阳节是中国的传统敬老节日，象征着健康长寿。人们会在这一天登高、赏菊，表达对长辈的尊敬和祝福。';
+                        } else {
+                            response = '重阳节在农历九月初九，是敬老的节日。习俗包括登高、插茱萸、赏菊花、饮菊花酒等。祝福语可以说：“重阳快乐，健康长寿！”';
+                        }
+                    } else {
+                        if (isAskingWhen) {
+                            response = 'The Double Ninth Festival is on the 9th day of the 9th lunar month, which falls between early October and early November in the Gregorian calendar.';
+                        } else if (isAskingCustoms) {
+                            response = 'Double Ninth Festival customs include: climbing high, wearing dogwood, appreciating chrysanthemums, drinking chrysanthemum wine, eating Double Ninth cake, and respecting the elderly.';
+                        } else if (isAskingGreetings) {
+                            response = 'Double Ninth Festival greetings include: Happy Double Ninth Festival, Health and longevity, Climb high and see far, All the best, Happiness and health, etc.';
+                        } else if (isAskingAbout) {
+                            response = 'The Double Ninth Festival is a traditional Chinese festival to respect the elderly, symbolizing health and longevity. People climb high and appreciate chrysanthemums to express respect and blessings to elders.';
+                        } else {
+                            response = 'The Double Ninth Festival is on the 9th day of the 9th lunar month, a festival to respect the elderly. Customs include climbing high, wearing dogwood, appreciating chrysanthemums, and drinking chrysanthemum wine. Greetings can be: "Happy Double Ninth Festival, health and longevity!"';
+                        }
+                    }
+                } else if (lowerMessage.includes('元宵节') || lowerMessage.includes('lantern')) {
+                    if (isChinese) {
+                        if (isAskingWhen) {
+                            response = '元宵节在农历正月十五，公历日期每年不同，一般在2月中旬左右。';
+                        } else if (isAskingCustoms) {
+                            response = '元宵节的传统习俗包括：吃元宵、赏花灯、猜灯谜、放烟花、舞龙舞狮等。';
+                        } else if (isAskingGreetings) {
+                            response = '元宵节的祝福语有：元宵快乐、团团圆圆、花好月圆、幸福美满、万事如意等。';
+                        } else if (isAskingAbout) {
+                            response = '元宵节是春节的最后一天，象征着团圆和美满。人们会在这一天吃元宵、赏花灯，庆祝春节的结束。';
+                        } else {
+                            response = '元宵节在农历正月十五，是春节的最后一天。习俗包括吃元宵、赏花灯、猜灯谜等。祝福语可以说：“元宵快乐，团团圆圆！”';
+                        }
+                    } else {
+                        if (isAskingWhen) {
+                            response = 'The Lantern Festival is on the 15th day of the 1st lunar month, which falls around mid-February in the Gregorian calendar.';
+                        } else if (isAskingCustoms) {
+                            response = 'Lantern Festival customs include: eating yuanxiao (glutinous rice balls), admiring lanterns, guessing lantern riddles, setting off fireworks, and dragon/lion dances.';
+                        } else if (isAskingGreetings) {
+                            response = 'Lantern Festival greetings include: Happy Lantern Festival, Reunion, Beautiful moon and flowers, Happiness and harmony, All the best, etc.';
+                        } else if (isAskingAbout) {
+                            response = 'The Lantern Festival is the last day of the Spring Festival, symbolizing reunion and happiness. People eat yuanxiao and admire lanterns to celebrate the end of the Spring Festival.';
+                        } else {
+                            response = 'The Lantern Festival is on the 15th day of the 1st lunar month, the last day of the Spring Festival. Customs include eating yuanxiao, admiring lanterns, and guessing lantern riddles. Greetings can be: "Happy Lantern Festival, reunion!"';
+                        }
+                    }
+                } else if (lowerMessage.includes('冬至') || lowerMessage.includes('winter solstice')) {
+                    if (isChinese) {
+                        if (isAskingWhen) {
+                            response = '冬至是二十四节气之一，通常在公历12月22日左右。';
+                        } else if (isAskingCustoms) {
+                            response = '冬至的传统习俗包括：吃饺子、吃汤圆、喝羊肉汤、祭祖等。';
+                        } else if (isAskingGreetings) {
+                            response = '冬至的祝福语有：冬至快乐、温暖过冬、身体健康、万事如意等。';
+                        } else if (isAskingAbout) {
+                            response = '冬至是一年中白天最短、夜晚最长的一天，象征着阴极阳生。人们会在这一天吃饺子、汤圆，以庆祝冬至的到来。';
+                        } else {
+                            response = '冬至是二十四节气之一，通常在公历12月22日左右。习俗包括吃饺子、汤圆等。祝福语可以说：“冬至快乐，温暖过冬！”';
+                        }
+                    } else {
+                        if (isAskingWhen) {
+                            response = 'The Winter Solstice is one of the 24 solar terms, usually around December 22nd in the Gregorian calendar.';
+                        } else if (isAskingCustoms) {
+                            response = 'Winter Solstice customs include: eating dumplings, eating tangyuan (glutinous rice balls), drinking mutton soup, and ancestor worship.';
+                        } else if (isAskingGreetings) {
+                            response = 'Winter Solstice greetings include: Happy Winter Solstice, Warm winter, Good health, All the best, etc.';
+                        } else if (isAskingAbout) {
+                            response = 'The Winter Solstice is the day with the shortest day and longest night of the year, symbolizing the transition from yin to yang. People eat dumplings and tangyuan to celebrate the arrival of the Winter Solstice.';
+                        } else {
+                            response = 'The Winter Solstice is one of the 24 solar terms, usually around December 22nd. Customs include eating dumplings, tangyuan, etc. Greetings can be: "Happy Winter Solstice, warm winter!"';
+                        }
+                    }
+                } else if (lowerMessage.includes('清明') || lowerMessage.includes('qingming')) {
+                    if (isChinese) {
+                        if (isAskingWhen) {
+                            response = '清明节在公历4月4日或5日，是二十四节气之一。';
+                        } else if (isAskingCustoms) {
+                            response = '清明节的传统习俗包括：扫墓、祭祖、踏青、放风筝、植树等。';
+                        } else if (isAskingGreetings) {
+                            response = '清明节的祝福语有：清明安康、平安吉祥、身体健康、万事如意等。';
+                        } else if (isAskingAbout) {
+                            response = '清明节是中国的传统祭祖节日，也是二十四节气之一。人们会在这一天扫墓、祭祖，表达对先人的敬意和思念。';
+                        } else {
+                            response = '清明节在公历4月4日或5日，是祭祖扫墓的节日。习俗包括扫墓、踏青等。祝福语可以说：“清明安康！”';
+                        }
+                    } else {
+                        if (isAskingWhen) {
+                            response = 'The Qingming Festival is on April 4th or 5th in the Gregorian calendar, one of the 24 solar terms.';
+                        } else if (isAskingCustoms) {
+                            response = 'Qingming Festival customs include: tomb sweeping, ancestor worship, spring outing, flying kites, and tree planting.';
+                        } else if (isAskingGreetings) {
+                            response = 'Qingming Festival greetings include: Happy Qingming Festival, Peace and good luck, Good health, All the best, etc.';
+                        } else if (isAskingAbout) {
+                            response = 'The Qingming Festival is a traditional Chinese festival for ancestor worship, also one of the 24 solar terms. People sweep tombs and worship ancestors to express respect and remembrance for their deceased relatives.';
+                        } else {
+                            response = 'The Qingming Festival is on April 4th or 5th, a festival for ancestor worship and tomb sweeping. Customs include tomb sweeping and spring outing. Greetings can be: "Happy Qingming Festival!"';
+                        }
+                    }
+                } else if (lowerMessage.includes('中元节') || lowerMessage.includes('ghost festival')) {
+                    if (isChinese) {
+                        if (isAskingWhen) {
+                            response = '中元节在农历七月十五，公历日期每年不同，一般在8月中旬左右。';
+                        } else if (isAskingCustoms) {
+                            response = '中元节的传统习俗包括：烧纸钱、放河灯、祭祖、供奉祭品等。';
+                        } else if (isAskingGreetings) {
+                            response = '中元节的祝福语有：中元节安康、平安吉祥、身体健康、万事如意等。';
+                        } else if (isAskingAbout) {
+                            response = '中元节是中国的传统祭祖节日，也被称为鬼节。人们会在这一天烧纸钱、放河灯，以表达对先人的敬意和思念。';
+                        } else {
+                            response = '中元节在农历七月十五，是祭祀祖先的节日。习俗包括烧纸钱、放河灯等。祝福语可以说：“中元节安康！”';
+                        }
+                    } else {
+                        if (isAskingWhen) {
+                            response = 'The Ghost Festival is on the 15th day of the 7th lunar month, which falls around mid-August in the Gregorian calendar.';
+                        } else if (isAskingCustoms) {
+                            response = 'Ghost Festival customs include: burning paper money, floating river lanterns, ancestor worship, and offering sacrifices.';
+                        } else if (isAskingGreetings) {
+                            response = 'Ghost Festival greetings include: Happy Ghost Festival, Peace and good luck, Good health, All the best, etc.';
+                        } else if (isAskingAbout) {
+                            response = 'The Ghost Festival is a traditional Chinese festival for ancestor worship, also known as the Hungry Ghost Festival. People burn paper money and float river lanterns to express respect and remembrance for their deceased relatives.';
+                        } else {
+                            response = 'The Ghost Festival is on the 15th day of the 7th lunar month, a festival for ancestor worship. Customs include burning paper money and floating river lanterns. Greetings can be: "Happy Ghost Festival!"';
+                        }
+                    }
+                } else if (lowerMessage.includes('七夕') || lowerMessage.includes('qixi')) {
+                    if (isChinese) {
+                        if (isAskingWhen) {
+                            response = '七夕节在农历七月初七，公历日期每年不同，一般在8月中旬左右。';
+                        } else if (isAskingCustoms) {
+                            response = '七夕节的传统习俗包括：乞巧、穿针引线、拜织女、吃巧果、鹊桥会等。';
+                        } else if (isAskingGreetings) {
+                            response = '七夕节的祝福语有：七夕快乐、爱情美满、有情人终成眷属、百年好合、幸福长久等。';
+                        } else if (isAskingAbout) {
+                            response = '七夕节是中国的传统情人节，也被称为乞巧节。传说中，牛郎织女会在这一天通过鹊桥相会，象征着忠贞不渝的爱情。';
+                        } else {
+                            response = '七夕节在农历七月初七，是中国的情人节。习俗包括乞巧、穿针引线、拜织女等。祝福语可以说：“七夕快乐，爱情美满！”';
+                        }
+                    } else {
+                        if (isAskingWhen) {
+                            response = 'The Qixi Festival is on the 7th day of the 7th lunar month, which falls around mid-August in the Gregorian calendar.';
+                        } else if (isAskingCustoms) {
+                            response = 'Qixi Festival customs include: begging for skills, threading needles, worshipping the weaver girl, eating qiaoguo (skill pastries), and magpie bridge meeting.';
+                        } else if (isAskingGreetings) {
+                            response = 'Qixi Festival greetings include: Happy Qixi Festival, Happy love, May lovers unite, Happy marriage for a hundred years, Long-lasting happiness, etc.';
+                        } else if (isAskingAbout) {
+                            response = 'The Qixi Festival is China\'s traditional Valentine\'s Day, also known as the Begging for Skills Festival. According to legend, the Cowherd and Weaver Girl meet on this day via a magpie bridge, symbolizing faithful love.';
+                        } else {
+                            response = 'The Qixi Festival is on the 7th day of the 7th lunar month, China\'s Valentine\'s Day. Customs include begging for skills, threading needles, and worshipping the weaver girl. Greetings can be: "Happy Qixi Festival, happy love!"';
+                        }
+                    }
+                } else if (lowerMessage.includes('你好') || lowerMessage.includes('hello') || lowerMessage.includes('hi')) {
+                    if (isChinese) {
+                        response = '你好！我是节日助手，有什么可以帮助你的吗？你可以询问关于中国传统节日的信息，如习俗、祝福语等。';
+                    } else {
+                        response = 'Hello! I am the Festival Assistant, what can I help you with? You can ask about Chinese traditional festivals, such as customs, blessings, etc.';
+                    }
+                } else {
+                    if (isChinese) {
+                        response = '抱歉，我是一个节日助手，专门提供关于中国传统节日的信息和祝福。你可以询问关于春节、中秋节、端午节、重阳节等传统节日的问题。';
+                    } else {
+                        response = 'Sorry, I am a Festival Assistant, specializing in providing information and blessings about Chinese traditional festivals. You can ask about Spring Festival, Mid-Autumn Festival, Dragon Boat Festival, Double Ninth Festival and other traditional festivals.';
+                    }
+                }
+                
+                // 显示响应
+                addMessage('ai', response);
+            } catch (error) {
+                removeMessage(loadingId);
+                addMessage('ai', `抱歉，发生了错误：${error.message}，请稍后再试。`);
+                console.error('Chat error:', error);
+            } finally {
+                // 恢复按钮状态
+                sendBtn.style.display = 'flex';
+                stopBtn.style.display = 'none';
+                currentReader = null;
+                currentMessageId = null;
+            }
+        }
+        
+        function stopMessage() {
+            if (currentReader) {
+                currentReader.cancel();
+                currentReader = null;
+                
+                // 恢复按钮状态
+                document.querySelector('.send-btn').style.display = 'flex';
+                document.querySelector('.stop-btn').style.display = 'none';
+            }
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function addMessage(role, content) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageId = 'msg-' + Date.now() + Math.random().toString(36).substr(2, 9);
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.id = messageId;
+            messageDiv.className = `chat-message ${role}`;
+            messageDiv.innerHTML = `
+                <div class="message-content">${content}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            return messageId;
+        }
+        
+        function updateMessage(messageId, content) {
+            const messageDiv = document.getElementById(messageId);
+            if (messageDiv) {
+                // 简单的Markdown处理
+                let formattedContent = content
+                    .replace(/### (.*?)(\n|$)/g, '<h3>$1</h3>')
+                    .replace(/## (.*?)(\n|$)/g, '<h2>$1</h2>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n/g, '<br>');
+                
+                messageDiv.querySelector('.message-content').innerHTML = formattedContent;
+                const messagesContainer = document.getElementById('chat-messages');
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+        
+        function removeMessage(messageId) {
+            const messageDiv = document.getElementById(messageId);
+            if (messageDiv) {
+                messageDiv.remove();
+            }
+        }
+        
+        // 页面加载
+        window.onload = function() {
+            loadLangData();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>About Us</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3 class="zh">关于我们</h3>
+            <h3 class="en hidden">About Us</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-container">
+            <h4 class="zh">团队成员</h4>
+            <h4 class="en hidden">Team Members</h4>
+            <div class="member">
+                <p class="zh">YIN YIN NWE<br>产品经理 & 交互设计师</p>
+                <p class="en hidden">YIN YIN NWE<br>Product Manager & UI/UX Design</p>
+            </div>
+            <div class="member">
+                <p class="zh">YEAP WEN HUEY<br>市场调研 & PPT制作 & 项目汇报</p>
+                <p class="en hidden">YEAP WEN HUEY<br>Research & PPT & Presentation</p>
+            </div>
+            <div class="member">
+                <p class="zh">HO JIA YU<br>用户画像 & 信息架构</p>
+                <p class="en hidden">HO JIA YU<br>User Profile & Structure</p>
+            </div>
+
+            <h4 class="zh">项目信息</h4>
+            <h4 class="en hidden">Project Info</h4>
+            <p class="zh">为在中国的留学生提供简单易懂的传统节日指南。</p>
+            <p class="en hidden">For international students in China to understand traditional festivals easily.</p>
+            <p class="zh">无需密码，简单友好。</p>
+            <p class="en hidden">No password required, simple and friendly.</p>
+        </div>
+        <script src="js/app.js"></script>
+        <script>
+            window.onload = function() {
+                updateLanguageDisplay();
+                updateLanguageButtons();
+            };
+        </script>
+    </div>
+</body>
+</html>

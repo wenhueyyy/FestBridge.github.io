@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>个人中心</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3>个人中心</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-container">
+            <!-- 个人信息 -->
+            <div class="profile-section">
+                <h4 class="section-title">个人信息</h4>
+                <div class="profile-info">
+                    <div class="avatar">👤</div>
+                    <div class="user-info">
+                        <h5 id="usernameDisplay">用户</h5>
+                        <p>留学生</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 功能菜单 -->
+            <div class="profile-section">
+                <h4 class="section-title">我的功能</h4>
+                <div class="menu-list">
+                    <div class="menu-item" onclick="showInteractionHistory()">
+                        <div class="menu-icon">📋</div>
+                        <div class="menu-text">互动记录</div>
+                        <div class="menu-arrow">→</div>
+                    </div>
+                    <div class="menu-item" onclick="location.href='about.html'">
+                        <div class="menu-icon">ℹ️</div>
+                        <div class="menu-text">关于我们</div>
+                        <div class="menu-arrow">→</div>
+                    </div>
+                    <div class="menu-item" onclick="logout()">
+                        <div class="menu-icon">🚪</div>
+                        <div class="menu-text">退出登录</div>
+                        <div class="menu-arrow">→</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 收藏的节日 -->
+            <div class="profile-section">
+                <h4 class="section-title">收藏的节日</h4>
+                <div class="favorites-list" id="favoritesList">
+                    <div class="empty-state">暂无收藏的节日</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // 加载个人信息
+        function loadProfile() {
+            const username = localStorage.getItem('username') || '用户';
+            document.getElementById('usernameDisplay').textContent = username;
+            
+            // 加载收藏的节日
+            loadFavorites();
+        }
+
+        // 加载收藏的节日
+        function loadFavorites() {
+            const favorites = getFavorites();
+            const favoritesList = document.getElementById('favoritesList');
+            
+            if (favorites.length === 0) {
+                const lang = getCurrentLang();
+                const emptyText = lang === 'zh' ? '暂无收藏的节日' : 'No favorite festivals yet';
+                favoritesList.innerHTML = `<div class="empty-state">${emptyText}</div>`;
+                return;
+            }
+            
+            favoritesList.innerHTML = '';
+            favorites.forEach(festivalName => {
+                const festival = festivalData[festivalName];
+                if (festival) {
+                    const lang = getCurrentLang();
+                    const festivalInfo = festival[lang];
+                    
+                    const item = document.createElement('div');
+                    item.className = 'favorite-item';
+                    item.onclick = () => goDetail(festivalName);
+                    item.innerHTML = `
+                        <div class="favorite-icon">${getFestivalIcon(festivalName)}</div>
+                        <div class="favorite-info">
+                            <h5>${festivalInfo.name}</h5>
+                            <p>${festivalInfo.date}</p>
+                        </div>
+                        <button class="remove-favorite" onclick="removeFavorite('${festivalName}', event)">×</button>
+                    `;
+                    favoritesList.appendChild(item);
+                }
+            });
+        }
+
+        // 获取节日图标
+        function getFestivalIcon(festivalName) {
+            const icons = {
+                'Spring Festival': '🧧',
+                'Mid-Autumn Festival': '🥮',
+                'Dragon Boat Festival': '🐲',
+                'Lantern Festival': '🏮',
+                'Double Ninth Festival': '🍁'
+            };
+            return icons[festivalName] || '🎊';
+        }
+
+        // 移除收藏
+        function removeFavorite(festivalName, event) {
+            event.stopPropagation();
+            const favorites = getFavorites();
+            const index = favorites.indexOf(festivalName);
+            if (index > -1) {
+                favorites.splice(index, 1);
+                saveFavorites(favorites);
+                const lang = getCurrentLang();
+                const toastText = lang === 'zh' ? '已移除收藏' : 'Removed from favorites';
+                showToast(toastText);
+                loadFavorites();
+            }
+        }
+
+        // 显示互动记录
+        function showInteractionHistory() {
+            const lang = getCurrentLang();
+            const toastText = lang === 'zh' ? '互动记录功能开发中' : 'Interaction history feature in development';
+            showToast(toastText);
+        }
+
+        // 退出登录
+        function logout() {
+            localStorage.removeItem('username');
+            localStorage.removeItem('language');
+            location.href = 'login.html';
+        }
+
+        // 页面加载
+        window.onload = function() {
+            loadLangData();
+            loadProfile();
+        };
+    </script>
+</body>
+</html>

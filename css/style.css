@@ -190,8 +190,8 @@
 }
 
 .login-btn {
-    width: 100%;
-    max-width: 400px;
+    width: 80%;
+    max-width: 300px;
     padding: 16px;
     background: linear-gradient(45deg, #C9373A, #E54A4D);
     color: white;
@@ -205,6 +205,7 @@
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    align-self: center;
 }
 
 .login-btn::before {
@@ -248,8 +249,8 @@
 }
 
 .wechat-login-btn {
-    width: 100%;
-    max-width: 400px;
+    width: 80%;
+    max-width: 300px;
     padding: 16px;
     background: #07C160;
     color: white;
@@ -266,6 +267,7 @@
     box-shadow: 0 4px 15px rgba(7, 193, 96, 0.3);
     position: relative;
     overflow: hidden;
+    align-self: center;
 }
 
 .wechat-login-btn::before {

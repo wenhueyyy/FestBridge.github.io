@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>必备物品</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3>必备物品</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="items-container" id="itemsList">
+        </div>
+        <script src="js/app.js"></script>
+        <script>
+            const itemsData = {
+                'Spring Festival': {
+                    zh: {
+                        name: '春节',
+                        items: [
+                            '春联',
+                            '福字',
+                            '红包',
+                            '糖果',
+                            '饺子皮',
+                            '肉馅',
+                            '新衣',
+                            '灯笼'
+                        ]
+                    },
+                    en: {
+                        name: 'Spring Festival',
+                        items: [
+                            'Spring couplets',
+                            'Fu character',
+                            'Red envelopes',
+                            'Candy',
+                            'Dumpling wrappers',
+                            'Meat filling',
+                            'New clothes',
+                            'Lanterns'
+                        ]
+                    }
+                },
+                'Lantern Festival': {
+                    zh: {
+                        name: '元宵节',
+                        items: [
+                            '元宵 / 汤圆',
+                            '花灯',
+                            '灯谜纸条',
+                            '烟花',
+                            '灯笼',
+                            '零食',
+                            '祈福香'
+                        ]
+                    },
+                    en: {
+                        name: 'Lantern Festival',
+                        items: [
+                            'Yuanxiao / tangyuan',
+                            'Lanterns',
+                            'Lantern riddle strips',
+                            'Fireworks',
+                            'Lanterns',
+                            'Snacks',
+                            'Prayer incense'
+                        ]
+                    }
+                },
+                'Qingming Festival': {
+                    zh: {
+                        name: '清明节',
+                        items: [
+                            '纸钱 / 香烛',
+                            '青团',
+                            '鲜花',
+                            '供品',
+                            '风筝',
+                            '柳条',
+                            '扫墓工具'
+                        ]
+                    },
+                    en: {
+                        name: 'Qingming Festival',
+                        items: [
+                            'Paper money / incense and candles',
+                            'Qingtuan',
+                            'Fresh flowers',
+                            'Offerings',
+                            'Kites',
+                            'Willow branches',
+                            'Tomb sweeping tools'
+                        ]
+                    }
+                },
+                'Dragon Boat Festival': {
+                    zh: {
+                        name: '端午节',
+                        items: [
+                            '粽子',
+                            '艾草 / 菖蒲',
+                            '香囊',
+                            '五彩绳',
+                            '雄黄酒',
+                            '龙舟道具',
+                            '粽子叶 / 糯米'
+                        ]
+                    },
+                    en: {
+                        name: 'Dragon Boat Festival',
+                        items: [
+                            'Zongzi',
+                            'Mugwort / calamus',
+                            'Sachets',
+                            'Five-color ropes',
+                            'Realgar wine',
+                            'Dragon boat props',
+                            'Zongzi leaves / glutinous rice'
+                        ]
+                    }
+                },
+                'Qixi Festival': {
+                    zh: {
+                        name: '七夕节',
+                        items: [
+                            '巧果',
+                            '针线',
+                            '香案',
+                            '供品',
+                            '信物',
+                            '祈福灯'
+                        ]
+                    },
+                    en: {
+                        name: 'Qixi Festival',
+                        items: [
+                            'Qiaoguo',
+                            'Needles and thread',
+                            'Incense table',
+                            'Offerings',
+                            'Tokens',
+                            'Prayer lanterns'
+                        ]
+                    }
+                },
+                'Mid-Autumn Festival': {
+                    zh: {
+                        name: '中秋节',
+                        items: [
+                            '月饼',
+                            '桂花酒',
+                            '灯笼',
+                            '供品',
+                            '桂花',
+                            '团圆家宴食材',
+                            '灯谜纸条'
+                        ]
+                    },
+                    en: {
+                        name: 'Mid-Autumn Festival',
+                        items: [
+                            'Mooncakes',
+                            'Osmanthus wine',
+                            'Lanterns',
+                            'Offerings',
+                            'Osmanthus',
+                            'Reunion dinner ingredients',
+                            'Lantern riddle strips'
+                        ]
+                    }
+                },
+                'Double Ninth Festival': {
+                    zh: {
+                        name: '重阳节',
+                        items: [
+                            '重阳糕',
+                            '菊花酒',
+                            '茱萸',
+                            '菊花',
+                            '登高装备',
+                            '敬老礼品',
+                            '风筝'
+                        ]
+                    },
+                    en: {
+                        name: 'Double Ninth Festival',
+                        items: [
+                            'Double Ninth cake',
+                            'Chrysanthemum wine',
+                            'Dogwood',
+                            'Chrysanthemums',
+                            'Climbing gear',
+                            'Gifts for elders',
+                            'Kites'
+                        ]
+                    }
+                },
+                'Laba Festival': {
+                    zh: {
+                        name: '腊八节',
+                        items: [
+                            '腊八粥食材',
+                            '腊八蒜',
+                            '腊味',
+                            '供品',
+                            '祈福香'
+                        ]
+                    },
+                    en: {
+                        name: 'Laba Festival',
+                        items: [
+                            'Laba porridge ingredients',
+                            'Laba garlic',
+                            'Cured meats',
+                            'Offerings',
+                            'Prayer incense'
+                        ]
+                    }
+                },
+                'Little New Year': {
+                    zh: {
+                        name: '小年',
+                        items: [
+                            '糖瓜',
+                            '灶神像',
+                            '窗花',
+                            '扫尘工具',
+                            '年货',
+                            '香烛',
+                            '供品'
+                        ]
+                    },
+                    en: {
+                        name: 'Little New Year',
+                        items: [
+                            'Sugar melons',
+                            'Kitchen God statue',
+                            'Window decorations',
+                            'Cleaning tools',
+                            'New Year goods',
+                            'Incense and candles',
+                            'Offerings'
+                        ]
+                    }
+                },
+                'New Year\'s Eve': {
+                    zh: {
+                        name: '除夕',
+                        items: [
+                            '年夜饭食材',
+                            '饺子皮 / 肉馅',
+                            '春联 / 福字',
+                            '红包',
+                            '鞭炮 / 烟花',
+                            '灯笼',
+                            '供品',
+                            '香烛'
+                        ]
+                    },
+                    en: {
+                        name: 'New Year\'s Eve',
+                        items: [
+                            'New Year\'s Eve dinner ingredients',
+                            'Dumpling wrappers / meat filling',
+                            'Spring couplets / Fu character',
+                            'Red envelopes',
+                            'Firecrackers / fireworks',
+                            'Lanterns',
+                            'Offerings',
+                            'Incense and candles'
+                        ]
+                    }
+                }
+            };
+
+            function loadItems() {
+                const itemsList = document.getElementById('itemsList');
+                const lang = localStorage.getItem('language') || 'zh';
+                itemsList.innerHTML = '';
+                
+                for (const [festival, data] of Object.entries(itemsData)) {
+                    const festivalInfo = data[lang];
+                    
+                    const section = document.createElement('div');
+                    section.className = 'item-section';
+                    section.innerHTML = `
+                        <h4>${festivalInfo.name}</h4>
+                        <div class="item-items">
+                            ${festivalInfo.items.map((item, index) => `
+                                <div class="item-item">
+                                    <div class="item-checkbox">
+                                        <input type="checkbox" id="item-${festival}-${index}">
+                                        <label for="item-${festival}-${index}">${item}</label>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    itemsList.appendChild(section);
+                }
+            }
+
+            window.onload = function() {
+                updateLanguageDisplay();
+                updateLanguageButtons();
+                loadItems();
+                updatePageTitle();
+            };
+
+            // 更新页面标题
+            function updatePageTitle() {
+                const lang = localStorage.getItem('language') || 'zh';
+                const h3El = document.querySelector('.header-bar h3');
+                if (h3El) {
+                    h3El.textContent = lang === 'zh' ? '必备物品' : 'Items';
+                }
+                const titleEl = document.querySelector('title');
+                if (titleEl) {
+                    titleEl.textContent = lang === 'zh' ? '必备物品' : 'Items';
+                }
+            }
+
+            // 语言切换时重新加载数据
+            function switchLanguage(lang) {
+                localStorage.setItem('language', lang);
+                updateLanguageDisplay();
+                updateLanguageButtons();
+                loadItems();
+                updatePageTitle();
+            }
+        </script>
+    </div>
+</body>
+</html>

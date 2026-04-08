@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>节日清单</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3>节日清单</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="customs-container" id="customsList">
+        </div>
+        <script src="js/app.js"></script>
+        <script>
+            const customsData = {
+                'Spring Festival': {
+                    zh: {
+                        name: '春节',
+                        customs: [
+                            '贴春联',
+                            '吃团圆饭',
+                            '发红包',
+                            '放鞭炮',
+                            '拜年',
+                            '守岁',
+                            '贴福字',
+                            '挂灯笼'
+                        ]
+                    },
+                    en: {
+                        name: 'Spring Festival',
+                        customs: [
+                            'Paste spring couplets',
+                            'Reunion dinner',
+                            'Give red envelopes',
+                            'Set off firecrackers',
+                            'Pay New Year calls',
+                            'Stay up late on New Year\'s Eve',
+                            'Paste Fu character',
+                            'Hang lanterns'
+                        ]
+                    }
+                },
+                'Lantern Festival': {
+                    zh: {
+                        name: '元宵节',
+                        customs: [
+                            '赏花灯',
+                            '猜灯谜',
+                            '吃元宵 / 汤圆',
+                            '舞龙舞狮',
+                            '踩高跷',
+                            '逛庙会',
+                            '放烟花',
+                            '送花灯'
+                        ]
+                    },
+                    en: {
+                        name: 'Lantern Festival',
+                        customs: [
+                            'Appreciate lanterns',
+                            'Guess lantern riddles',
+                            'Eat yuanxiao / tangyuan',
+                            'Dragon and lion dances',
+                            'Stilt walking',
+                            'Visit temple fairs',
+                            'Set off fireworks',
+                            'Send lanterns'
+                        ]
+                    }
+                },
+                'Qingming Festival': {
+                    zh: {
+                        name: '清明节',
+                        customs: [
+                            '扫墓祭祖',
+                            '踏青郊游',
+                            '插柳',
+                            '放风筝',
+                            '吃青团',
+                            '荡秋千',
+                            '祭祀先人',
+                            '植树'
+                        ]
+                    },
+                    en: {
+                        name: 'Qingming Festival',
+                        customs: [
+                            'Tomb sweeping and ancestor worship',
+                            'Spring outing',
+                            'Insert willow branches',
+                            'Fly kites',
+                            'Eat qingtuan',
+                            'Swing',
+                            'Ancestor worship',
+                            'Plant trees'
+                        ]
+                    }
+                },
+                'Dragon Boat Festival': {
+                    zh: {
+                        name: '端午节',
+                        customs: [
+                            '吃粽子',
+                            '赛龙舟',
+                            '挂艾草 / 菖蒲',
+                            '佩香囊',
+                            '系五彩绳',
+                            '喝雄黄酒',
+                            '沐兰汤',
+                            '射柳'
+                        ]
+                    },
+                    en: {
+                        name: 'Dragon Boat Festival',
+                        customs: [
+                            'Eat zongzi',
+                            'Dragon boat racing',
+                            'Hang mugwort / calamus',
+                            'Wear sachets',
+                            'Tie five-color ropes',
+                            'Drink realgar wine',
+                            'Bathe in orchid water',
+                            'Shoot willow'
+                        ]
+                    }
+                },
+                'Qixi Festival': {
+                    zh: {
+                        name: '七夕节',
+                        customs: [
+                            '拜织女',
+                            '乞巧',
+                            '穿针引线',
+                            '吃巧果',
+                            '拜魁星',
+                            '晒书 / 晒衣',
+                            '祈福许愿',
+                            '互赠信物'
+                        ]
+                    },
+                    en: {
+                        name: 'Qixi Festival',
+                        customs: [
+                            'Worship the Weaver Girl',
+                            'Beg for skill',
+                            'Threading needles',
+                            'Eat qiaoguo',
+                            'Worship Kuixing',
+                            'Sun books / clothes',
+                            'Pray for blessings',
+                            'Exchange tokens'
+                        ]
+                    }
+                },
+                'Mid-Autumn Festival': {
+                    zh: {
+                        name: '中秋节',
+                        customs: [
+                            '赏月',
+                            '吃月饼',
+                            '祭月',
+                            '赏桂花',
+                            '喝桂花酒',
+                            '提灯笼',
+                            '猜灯谜',
+                            '团圆聚餐'
+                        ]
+                    },
+                    en: {
+                        name: 'Mid-Autumn Festival',
+                        customs: [
+                            'Enjoy the moon',
+                            'Eat mooncakes',
+                            'Worship the moon',
+                            'Appreciate osmanthus',
+                            'Drink osmanthus wine',
+                            'Carry lanterns',
+                            'Guess lantern riddles',
+                            'Reunion dinner'
+                        ]
+                    }
+                },
+                'Double Ninth Festival': {
+                    zh: {
+                        name: '重阳节',
+                        customs: [
+                            '登高望远',
+                            '插茱萸',
+                            '赏菊花',
+                            '喝菊花酒',
+                            '吃重阳糕',
+                            '敬老祝寿',
+                            '放风筝',
+                            '祭祖'
+                        ]
+                    },
+                    en: {
+                        name: 'Double Ninth Festival',
+                        customs: [
+                            'Climb high and look far',
+                            'Wear dogwood',
+                            'Appreciate chrysanthemums',
+                            'Drink chrysanthemum wine',
+                            'Eat Double Ninth cake',
+                            'Respect and celebrate the elderly',
+                            'Fly kites',
+                            'Ancestor worship'
+                        ]
+                    }
+                },
+                'Laba Festival': {
+                    zh: {
+                        name: '腊八节',
+                        customs: [
+                            '喝腊八粥',
+                            '腌腊八蒜',
+                            '祭祀祖先',
+                            '祈福',
+                            '吃腊八面',
+                            '晒腊八冰',
+                            '熬制腊味'
+                        ]
+                    },
+                    en: {
+                        name: 'Laba Festival',
+                        customs: [
+                            'Drink Laba porridge',
+                            'Pickle Laba garlic',
+                            'Ancestor worship',
+                            'Pray for blessings',
+                            'Eat Laba noodles',
+                            'Sun Laba ice',
+                            'Cook cured meats'
+                        ]
+                    }
+                },
+                'Little New Year': {
+                    zh: {
+                        name: '小年',
+                        customs: [
+                            '祭灶神',
+                            '扫尘',
+                            '贴窗花',
+                            '吃糖瓜',
+                            '剪窗花',
+                            '备年货',
+                            '沐浴理发',
+                            '送灶神'
+                        ]
+                    },
+                    en: {
+                        name: 'Little New Year',
+                        customs: [
+                            'Worship the Kitchen God',
+                            'Clean the house',
+                            'Paste window decorations',
+                            'Eat sugar melons',
+                            'Cut window decorations',
+                            'Prepare New Year goods',
+                            'Bath and haircut',
+                            'Send off the Kitchen God'
+                        ]
+                    }
+                },
+                'New Year\'s Eve': {
+                    zh: {
+                        name: '除夕',
+                        customs: [
+                            '吃年夜饭',
+                            '守岁',
+                            '贴春联 / 福字',
+                            '放鞭炮',
+                            '包饺子',
+                            '挂灯笼',
+                            '祭祖',
+                            '发压岁钱'
+                        ]
+                    },
+                    en: {
+                        name: 'New Year\'s Eve',
+                        customs: [
+                            'Eat New Year\'s Eve dinner',
+                            'Stay up late',
+                            'Paste spring couplets / Fu character',
+                            'Set off firecrackers',
+                            'Make dumplings',
+                            'Hang lanterns',
+                            'Ancestor worship',
+                            'Give red envelopes'
+                        ]
+                    }
+                }
+            };
+
+            function loadCustoms() {
+                const customsList = document.getElementById('customsList');
+                const lang = localStorage.getItem('language') || 'zh';
+                customsList.innerHTML = '';
+                
+                for (const [festival, data] of Object.entries(customsData)) {
+                    const festivalInfo = data[lang];
+                    
+                    const section = document.createElement('div');
+                    section.className = 'custom-section';
+                    section.innerHTML = `
+                        <h4>${festivalInfo.name}</h4>
+                        <div class="custom-items">
+                            ${festivalInfo.customs.map((custom, index) => `
+                                <div class="custom-item">
+                                    <div class="custom-checkbox">
+                                        <input type="checkbox" id="custom-${festival}-${index}">
+                                        <label for="custom-${festival}-${index}">${custom}</label>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    customsList.appendChild(section);
+                }
+            }
+
+            window.onload = function() {
+                updateLanguageDisplay();
+                updateLanguageButtons();
+                loadCustoms();
+                updatePageTitle();
+            };
+
+            // 更新页面标题
+            function updatePageTitle() {
+                const lang = localStorage.getItem('language') || 'zh';
+                const h3El = document.querySelector('.header-bar h3');
+                if (h3El) {
+                    h3El.textContent = lang === 'zh' ? '节日清单' : 'To do list';
+                }
+                const titleEl = document.querySelector('title');
+                if (titleEl) {
+                    titleEl.textContent = lang === 'zh' ? '节日清单' : 'To do list';
+                }
+            }
+
+            // 语言切换时重新加载数据
+            function switchLanguage(lang) {
+                localStorage.setItem('language', lang);
+                updateLanguageDisplay();
+                updateLanguageButtons();
+                loadCustoms();
+                updatePageTitle();
+            }
+        </script>
+    </div>
+</body>
+</html>

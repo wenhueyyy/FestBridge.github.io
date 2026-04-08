@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>节日助手</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .chat-container {
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            min-height: calc(100vh - 120px);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 16px;
+            background: #f9f9f9;
+            max-height: 60vh;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .chat-message {
+            margin-bottom: 16px;
+            max-width: 80%;
+        }
+        
+        .chat-message.user {
+            align-self: flex-end;
+            margin-left: auto;
+        }
+        
+        .chat-message.ai {
+            align-self: flex-start;
+        }
+        
+        .message-content {
+            padding: 14px 18px;
+            border-radius: 16px;
+            line-height: 1.5;
+            font-size: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .suggestions-container {
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background: #f0f0f0;
+            border-radius: 12px;
+        }
+        
+        .suggestions-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .suggestions-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .suggestion-btn {
+            padding: 8px 14px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 16px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .suggestion-btn:hover {
+            background: #f5f5f5;
+            border-color: #C9373A;
+        }
+        
+        .chat-message.user .message-content {
+            background: #C9373A;
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+        
+        .chat-message.ai .message-content {
+            background: white;
+            color: #333;
+            border-bottom-left-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            align-items: center;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #F0E6D8;
+            border-radius: 20px;
+            outline: none;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .chat-input input:focus {
+            border-color: #C9373A;
+            box-shadow: 0 0 0 3px rgba(201, 55, 58, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .send-btn {
+            padding: 14px 20px;
+            background: linear-gradient(45deg, #C9373A, #E54A4D);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            min-width: 70px;
+            box-shadow: 0 4px 15px rgba(201, 55, 58, 0.3);
+        }
+        
+        .send-btn:hover {
+            background: linear-gradient(45deg, #E54A4D, #F55A5D);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(201, 55, 58, 0.4);
+        }
+        
+        .send-btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 8px rgba(201, 55, 58, 0.3);
+        }
+        
+        .stop-btn {
+            padding: 12px 18px;
+            background: #666;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .stop-btn:hover {
+            background: #888;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(201, 55, 58, 0.3);
+            border-radius: 50%;
+            border-top-color: #C9373A;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 375px) {
+            .chat-container {
+                padding: 15px;
+            }
+            
+            .chat-messages {
+                padding: 12px;
+                margin-bottom: 15px;
+            }
+            
+            .message-content {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+            
+            .chat-input {
+                padding: 10px;
+                margin-bottom: 20px;
+            }
+            
+            .chat-input input {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+            
+            .send-btn {
+                padding: 12px 16px;
+                font-size: 14px;
+                min-width: 60px;
+            }
+        }
+    </style>
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3>节日助手</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+                <!-- 欢迎消息 -->
+                <div class="chat-message ai">
+                    <div class="message-content" id="welcomeMessage">
+                        你好！我是节日助手，有什么可以帮助你的吗？你可以询问关于中国传统节日的信息，如习俗、祝福语等。
+                    </div>
+                </div>
+            </div>
+
+            <!-- 建议问题区域 -->
+            <div class="suggestions-container" id="suggestions-container" style="display: none;">
+                <div class="suggestions-title" id="suggestions-title">你可能想问：</div>
+                <div class="suggestions-list" id="suggestions-list"></div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="chat-input" placeholder="请输入你的问题..." onkeypress="handleKeyPress(event)">
+                <button class="send-btn" onclick="sendMessage()">发送</button>
+                <button class="stop-btn" onclick="stopMessage()">停止</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/api.js"></script>
+    <script>
+        // 聊天功能
+        let currentReader = null;
+        let currentMessageId = null;
+        let isStreaming = false;  // 防重复发送标志
+        
+        async function sendMessage() {
+            if (isStreaming) return;  // 防止重复发送
+            
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            const sendBtn = document.querySelector('.send-btn');
+            const stopBtn = document.querySelector('.stop-btn');
+            
+            if (!message) return;
+            
+            isStreaming = true;
+            
+            // 清空建议问题
+            clearSuggestions();
+            
+            // 禁用发送按钮，显示停止按钮
+            sendBtn.style.display = 'none';
+            stopBtn.style.display = 'flex';
+            
+            // 添加用户消息
+            addMessage('user', message);
+            input.value = '';
+            
+            // 显示加载状态
+            const loadingId = addMessage('ai', '<div class="loading"></div>');
+            currentMessageId = loadingId; // 设置当前消息ID
+            
+            try {
+                // 调用Coze API
+                const response = await sendMessageToCoze(message);
+                
+                // 移除加载消息
+                removeMessage(loadingId);
+                currentMessageId = null;
+                
+                // 解析响应，提取建议问题
+                const { content, suggestions } = parseResponse(response);
+                
+                // 显示响应
+                addMessage('ai', content);
+                
+                // 显示建议问题
+                if (suggestions && suggestions.length > 0) {
+                    displaySuggestions(suggestions);
+                }
+            } catch (error) {
+                removeMessage(loadingId);
+                currentMessageId = null;
+                addMessage('ai', `抱歉，发生了错误：${error.message}，请稍后再试。`);
+                console.error('Chat error:', error);
+            } finally {
+                // 恢复按钮状态
+                sendBtn.style.display = 'flex';
+                stopBtn.style.display = 'none';
+                currentReader = null;
+                isStreaming = false; // 重置防重复发送标志
+            }
+        }
+        
+        // 解析响应，提取建议问题
+        function parseResponse(response) {
+            if (!response) return { content: '', suggestions: [] };
+            
+            let content = response;
+            const suggestions = [];
+            
+            // 英文建议问题模式
+            const enPatterns = [
+                /(What are\s+[^?!]*[?!])/gi,
+                /(What is\s+[^?!]*[?!])/gi,
+                /(How do\s+[^?!]*[?!])/gi,
+                /(How to\s+[^?!]*[?!])/gi,
+                /(Can you\s+[^?!]*[?!])/gi,
+                /(Why is\s+[^?!]*[?!])/gi,
+                /(Tell me about\s+[^?!]*[?!])/gi
+            ];
+            
+            // 中文建议问题模式
+            const zhPatterns = [
+                /(什么是[^？！]*[？！])/g,
+                /(如何[^？！]*[？！])/g,
+                /(怎么[^？！]*[？！])/g,
+                /(为什么[^？！]*[？！])/g,
+                /(有哪些[^？！]*[？！])/g,
+                /(能否[^？！]*[？！])/g
+            ];
+            
+            const lang = getCurrentLang();
+            const patterns = lang === 'zh' ? zhPatterns : enPatterns;
+            
+            for (const pattern of patterns) {
+                let match;
+                while ((match = pattern.exec(response)) !== null) {
+                    let question = match[1].trim();
+                    question = question.replace(/\s+/g, ' ').trim();
+                    if (question && !suggestions.includes(question) && question.length < 100) {
+                        suggestions.push(question);
+                    }
+                }
+            }
+            
+            // 从内容中移除建议问题
+            suggestions.forEach(question => {
+                content = content.replace(question, '');
+            });
+            
+            content = content.replace(/\s+/g, ' ').trim();
+            content = content.replace(/([a-z])([A-Z])/g, '$1 $2');
+            
+            return { content, suggestions: suggestions.slice(0, 3) };
+        }
+        
+        // 显示建议问题
+        function displaySuggestions(suggestions) {
+            const container = document.getElementById('suggestions-container');
+            const list = document.getElementById('suggestions-list');
+            const title = document.getElementById('suggestions-title');
+            
+            // 清空现有建议
+            list.innerHTML = '';
+            
+            // 根据当前语言设置标题
+            const lang = getCurrentLang();
+            title.textContent = lang === 'zh' ? '你可能想问：' : 'You might ask:';
+            
+            // 添加建议问题按钮
+            suggestions.forEach(question => {
+                const btn = document.createElement('button');
+                btn.className = 'suggestion-btn';
+                btn.textContent = question;
+                btn.onclick = () => {
+                    const input = document.getElementById('chat-input');
+                    input.value = question;
+                    input.focus();
+                };
+                list.appendChild(btn);
+            });
+            
+            // 显示建议容器
+            container.style.display = 'block';
+        }
+        
+        // 清空建议问题
+        function clearSuggestions() {
+            const container = document.getElementById('suggestions-container');
+            const list = document.getElementById('suggestions-list');
+            
+            list.innerHTML = '';
+            container.style.display = 'none';
+        }
+        
+        function stopMessage() {
+            if (currentReader) {
+                currentReader.cancel();
+                currentReader = null;
+                
+                // 恢复按钮状态
+                document.querySelector('.send-btn').style.display = 'flex';
+                document.querySelector('.stop-btn').style.display = 'none';
+            }
+        }
+        
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+        
+        function addMessage(role, content) {
+            const messagesContainer = document.getElementById('chat-messages');
+            const messageId = 'msg-' + Date.now() + Math.random().toString(36).substr(2, 9);
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.id = messageId;
+            messageDiv.className = `chat-message ${role}`;
+            messageDiv.innerHTML = `
+                <div class="message-content">${content}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            return messageId;
+        }
+        
+        function updateMessage(messageId, content) {
+            const messageDiv = document.getElementById(messageId);
+            if (messageDiv) {
+                // 简单的Markdown处理
+                let formattedContent = content
+                    .replace(/### (.*?)(\n|$)/g, '<h3>$1</h3>')
+                    .replace(/## (.*?)(\n|$)/g, '<h2>$1</h2>')
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\n/g, '<br>');
+                
+                messageDiv.querySelector('.message-content').innerHTML = formattedContent;
+                const messagesContainer = document.getElementById('chat-messages');
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+        
+        function removeMessage(messageId) {
+            const messageDiv = document.getElementById(messageId);
+            if (messageDiv) {
+                messageDiv.remove();
+            }
+        }
+        
+        // 页面加载
+        window.onload = function() {
+            loadLangData();
+            updateWelcomeMessage();
+        };
+
+        // 语言切换时更新欢迎消息
+        function switchLanguage(lang) {
+            localStorage.setItem('language', lang);
+            updateLanguageDisplay();
+            updateWelcomeMessage();
+        }
+
+        // 更新欢迎消息
+        function updateWelcomeMessage() {
+            const lang = getCurrentLang();
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            if (welcomeMessage) {
+                if (lang === 'zh') {
+                    welcomeMessage.textContent = '你好！我是节日助手，有什么可以帮助你的吗？你可以询问关于中国传统节日的信息，如习俗、祝福语等。';
+                } else {
+                    welcomeMessage.textContent = 'Hello! I am the Festival Assistant, what can I help you with? You can ask about Chinese traditional festivals, such as customs, blessings, etc.';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

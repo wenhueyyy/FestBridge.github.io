@@ -1,0 +1,248 @@
+{
+  "zh": {
+    "app_name": "FestBridge",
+    "start_page": {
+      "title": "中国节日指南",
+      "start_button": "开始使用"
+    },
+    "login_page": {
+      "title": "登录",
+      "welcome": "欢迎",
+      "username_placeholder": "你的名字",
+      "password_placeholder": "密码（任意）",
+      "login_button": "登录",
+      "wechat_login": "微信一键登录",
+      "or": "OR"
+    },
+    "home_page": {
+      "title": "节日",
+      "search_placeholder": "搜索节日...",
+      "ai_assistant": "节日助手",
+      "quick_entries": {
+        "today": "今日节日",
+        "upcoming": "即将到来"
+      },
+      "section_titles": {
+        "popular_festivals": "热门节日"
+      },
+      "feature_entries": {
+        "blessings": "祝福语库",
+        "customs": "节日清单",
+        "items": "必备物品",
+        "tips": "文化避坑指南",
+        "profile": "我的"
+        }
+    },
+    "festival_names": {
+      "spring_festival": "春节",
+      "mid_autumn_festival": "中秋节",
+      "dragon_boat_festival": "端午节",
+      "lantern_festival": "元宵节",
+      "double_ninth_festival": "重阳节",
+      "winter_solstice": "冬至",
+      "qingming_festival": "清明节",
+      "ghost_festival": "中元节",
+      "qixi_festival": "七夕节"
+    },
+    "festival_dates": {
+      "spring_festival": "农历正月初一",
+      "mid_autumn_festival": "农历八月十五",
+      "dragon_boat_festival": "农历五月初五",
+      "lantern_festival": "农历正月十五",
+      "double_ninth_festival": "农历九月初九",
+      "winter_solstice": "农历十一月初七",
+      "qingming_festival": "农历三月初一",
+      "ghost_festival": "农历七月十五",
+      "qixi_festival": "农历七月初七"
+    },
+    "detail_page": {
+      "date": "日期",
+      "customs": "习俗",
+      "blessings": "祝福语",
+      "tips": "小贴士"
+    },
+    "calendar_page": {
+      "title": "节日日历",
+      "tips_title": "今日节日"
+    },
+    "profile_page": {
+      "title": "个人中心",
+      "default_username": "微信用户",
+      "section_titles": {
+        "personal_info": "个人信息",
+        "features": "我的功能",
+        "favorites": "收藏的节日"
+      },
+      "menu_items": {
+        "interaction_history": "互动记录",
+        "about_us": "关于我们",
+        "logout": "退出登录"
+      },
+      "user_type": "留学生",
+      "empty_state": "暂无收藏的节日",
+      "toast_messages": {
+        "removed_from_favorites": "已移除收藏",
+        "interaction_history_in_development": "互动记录功能开发中"
+      }
+    },
+    "chat_page": {
+      "title": "节日助手",
+      "input_placeholder": "请输入你的问题...",
+      "send_button": "发送"
+    },
+    "upcoming_page": {
+      "title": "即将到来"
+    },
+    "blessings_page": {
+      "title": "祝福语库"
+    },
+    "tips_page": {
+      "title": "文化避坑指南"
+    },
+    "items_page": {
+      "title": "必备物品"
+    },
+    "about_page": {
+      "title": "关于我们"
+    },
+    "customs_page": {
+      "title": "节日清单"
+    },
+    "common": {
+      "loading": "加载中...",
+      "error": "出错了",
+      "success": "成功",
+      "cancel": "取消",
+      "confirm": "确认",
+      "back": "返回"
+    },
+    "toast_messages": {
+      "wechat_login_success": "微信登录成功",
+      "favorite_updated": "收藏已更新",
+      "custom_check_updated": "习俗打卡已更新"
+    }
+  },
+  "en": {
+    "app_name": "FestBridge",
+    "start_page": {
+      "title": "Chinese Festival Guide",
+      "start_button": "Get Started"
+    },
+    "login_page": {
+      "title": "Login",
+      "welcome": "Welcome",
+      "username_placeholder": "Your Name",
+      "password_placeholder": "Password (Any)",
+      "login_button": "Login",
+      "wechat_login": "WeChat Login",
+      "or": "OR"
+    },
+    "home_page": {
+      "title": "Festivals",
+      "search_placeholder": "Search festivals...",
+      "ai_assistant": "Festival Assistant",
+      "quick_entries": {
+        "today": "Today",
+        "upcoming": "Upcoming"
+      },
+      "section_titles": {
+        "popular_festivals": "Popular Festivals"
+      },
+      "feature_entries": {
+        "blessings": "Blessings",
+        "customs": "To do list",
+        "items": "Items",
+        "tips": "Tips",
+        "profile": "Profile"
+        }
+    },
+    "festival_names": {
+      "spring_festival": "Spring Festival",
+      "mid_autumn_festival": "Mid-Autumn Festival",
+      "dragon_boat_festival": "Dragon Boat Festival",
+      "lantern_festival": "Lantern Festival",
+      "double_ninth_festival": "Double Ninth Festival",
+      "winter_solstice": "Winter Solstice",
+      "qingming_festival": "Qingming Festival",
+      "ghost_festival": "Ghost Festival",
+      "qixi_festival": "Qixi Festival"
+    },
+    "festival_dates": {
+      "spring_festival": "1st Lunar Month",
+      "mid_autumn_festival": "15th 8th Lunar Month",
+      "dragon_boat_festival": "5th 5th Lunar Month",
+      "lantern_festival": "15th 1st Lunar Month",
+      "double_ninth_festival": "9th 9th Lunar Month",
+      "winter_solstice": "7th 11th Lunar Month",
+      "qingming_festival": "1st 3rd Lunar Month",
+      "ghost_festival": "15th 7th Lunar Month",
+      "qixi_festival": "7th 7th Lunar Month"
+    },
+    "detail_page": {
+      "date": "Date",
+      "customs": "Customs",
+      "blessings": "Blessings",
+      "tips": "Tips"
+    },
+    "calendar_page": {
+      "title": "Festival Calendar",
+      "tips_title": "Today's Festivals"
+    },
+    "profile_page": {
+      "title": "Profile",
+      "default_username": "WeChat User",
+      "section_titles": {
+        "personal_info": "Personal Info",
+        "features": "My Features",
+        "favorites": "Favorite Festivals"
+      },
+      "menu_items": {
+        "interaction_history": "Interaction History",
+        "about_us": "About Us",
+        "logout": "Logout"
+      },
+      "user_type": "International Student",
+      "empty_state": "No favorite festivals yet",
+      "toast_messages": {
+        "removed_from_favorites": "Removed from favorites",
+        "interaction_history_in_development": "Interaction history feature in development"
+      }
+    },
+    "chat_page": {
+      "title": "Festival Assistant",
+      "input_placeholder": "Please enter your question...",
+      "send_button": "Send"
+    },
+    "upcoming_page": {
+      "title": "Upcoming"
+    },
+    "blessings_page": {
+      "title": "Blessings"
+    },
+    "tips_page": {
+      "title": "Tips"
+    },
+    "items_page": {
+      "title": "Items"
+    },
+    "about_page": {
+      "title": "About Us"
+    },
+    "customs_page": {
+      "title": "To do list"
+    },
+    "common": {
+      "loading": "Loading...",
+      "error": "Error",
+      "success": "Success",
+      "cancel": "Cancel",
+      "confirm": "Confirm",
+      "back": "Back"
+    },
+    "toast_messages": {
+      "wechat_login_success": "WeChat login successful",
+      "favorite_updated": "Favorite updated",
+      "custom_check_updated": "Custom check updated"
+    }
+  }
+}

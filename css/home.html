@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Home</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='login.html'">←</div>
+            <h3>节日</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="搜索节日..." oninput="searchFestival()">
+            <div class="search-results" id="searchResults"></div>
+        </div>
+
+        <!-- 智能助手按钮 -->
+        <div class="ai-assistant-section">
+            <button class="ai-assistant-btn" onclick="location.href='chat.html'">
+                <span class="ai-icon">🤖</span>
+                <span class="ai-text">节日助手</span>
+            </button>
+        </div>
+
+        <!-- 快捷入口 -->
+        <div class="quick-entries">
+            <div class="quick-entry" onclick="location.href='calendar.html'">
+                <div class="quick-icon">📅</div>
+                <div class="quick-text">今日节日</div>
+            </div>
+            <div class="quick-entry" onclick="location.href='upcoming.html'">
+                <div class="quick-icon">⏰</div>
+                <div class="quick-text">即将到来</div>
+            </div>
+        </div>
+
+        <!-- 节日卡片 -->
+        <div class="festival-section">
+            <h4 class="section-title">热门节日</h4>
+            <div class="festival-list" id="festivalList">
+                <div class="festival-item" data-name="Spring Festival" onclick="goDetail('Spring Festival')">
+                    <div class="icon">🧧</div>
+                    <div class="info">
+                        <h4>春节</h4>
+                        <p>农历正月初一</p>
+                        <button class="favorite-btn" onclick="toggleFavorite('Spring Festival', event)">🤍</button>
+                    </div>
+                </div>
+                <div class="festival-item" data-name="Mid-Autumn Festival" onclick="goDetail('Mid-Autumn Festival')">
+                    <div class="icon">🥮</div>
+                    <div class="info">
+                        <h4>中秋节</h4>
+                        <p>农历八月十五</p>
+                        <button class="favorite-btn" onclick="toggleFavorite('Mid-Autumn Festival', event)">🤍</button>
+                    </div>
+                </div>
+                <div class="festival-item" data-name="Dragon Boat Festival" onclick="goDetail('Dragon Boat Festival')">
+                    <div class="icon">🐲</div>
+                    <div class="info">
+                        <h4>端午节</h4>
+                        <p>农历五月初五</p>
+                        <button class="favorite-btn" onclick="toggleFavorite('Dragon Boat Festival', event)">🤍</button>
+                    </div>
+                </div>
+                <div class="festival-item" data-name="Lantern Festival" onclick="goDetail('Lantern Festival')">
+                    <div class="icon">🏮</div>
+                    <div class="info">
+                        <h4>元宵节</h4>
+                        <p>农历正月十五</p>
+                        <button class="favorite-btn" onclick="toggleFavorite('Lantern Festival', event)">🤍</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能入口 -->
+        <div class="feature-entries">
+            <div class="feature-entry" onclick="location.href='blessings.html'">
+                <div class="feature-icon">🎊</div>
+                <div class="feature-text">祝福语库</div>
+            </div>
+            <div class="feature-entry" onclick="location.href='customs.html'">
+                <div class="feature-icon">📋</div>
+                <div class="feature-text">习俗清单</div>
+            </div>
+            <div class="feature-entry" onclick="location.href='items.html'">
+                <div class="feature-icon">🛒</div>
+                <div class="feature-text">必备物品</div>
+            </div>
+            <div class="feature-entry" onclick="location.href='tips.html'">
+                <div class="feature-icon">⚠️</div>
+                <div class="feature-text">文化避坑指南</div>
+            </div>
+            <div class="feature-entry" onclick="location.href='profile.html'">
+                <div class="feature-icon">👤</div>
+                <div class="feature-text">我的</div>
+            </div>
+        </div>
+        <script src="js/app.js"></script>
+    </div>
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="pageTitle">节日日历</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3 id="pageHeader">节日日历</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <button class="month-btn" onclick="changeMonth(-1)">‹</button>
+                <h4 id="currentMonth">2026年4月</h4>
+                <button class="month-btn" onclick="changeMonth(1)">›</button>
+            </div>
+
+            <div class="weekdays" id="weekdays">
+                <div class="weekday">日</div>
+                <div class="weekday">一</div>
+                <div class="weekday">二</div>
+                <div class="weekday">三</div>
+                <div class="weekday">四</div>
+                <div class="weekday">五</div>
+                <div class="weekday">六</div>
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid">
+            </div>
+
+            <div class="festival-tips" id="festivalTips">
+                <h5 id="festivalTipsTitle">今日节日</h5>
+                <p id="todayFestivals">今天没有特别的节日</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        // 节日数据（公历）
+        const solarFestivals = {
+            '1-1': { zh: '元旦', en: 'New Year\'s Day' },
+            '2-14': { zh: '情人节', en: 'Valentine\'s Day' },
+            '3-8': { zh: '妇女节', en: 'Women\'s Day' },
+            '5-1': { zh: '劳动节', en: 'Labor Day' },
+            '6-1': { zh: '儿童节', en: 'Children\'s Day' },
+            '10-1': { zh: '国庆节', en: 'National Day' },
+            '12-25': { zh: '圣诞节', en: 'Christmas' }
+        };
+
+        // 节日数据（农历）
+        const lunarFestivals = {
+            '1-1': { zh: '春节', en: 'Spring Festival', key: 'Spring Festival' },
+            '1-15': { zh: '元宵节', en: 'Lantern Festival', key: 'Lantern Festival' },
+            '5-5': { zh: '端午节', en: 'Dragon Boat Festival', key: 'Dragon Boat Festival' },
+            '7-7': { zh: '七夕节', en: 'Qixi Festival', key: 'Qixi Festival' },
+            '8-15': { zh: '中秋节', en: 'Mid-Autumn Festival', key: 'Mid-Autumn Festival' },
+            '9-9': { zh: '重阳节', en: 'Double Ninth Festival', key: 'Double Ninth Festival' },
+            '12-8': { zh: '腊八节', en: 'Laba Festival' },
+            '12-23': { zh: '小年', en: 'Minor New Year' },
+            '0-0': { zh: '除夕', en: 'Lunar New Year\'s Eve' }
+        };
+
+        // 节气数据（中文到英文的映射）
+        const jieQiData = {
+            '冬至': 'Winter Solstice',
+            '清明': 'Qingming Festival',
+            '立春': 'Beginning of Spring',
+            '雨水': 'Rain Water',
+            '惊蛰': 'Awakening of Insects',
+            '春分': 'Spring Equinox',
+            '谷雨': 'Grain Rain',
+            '立夏': 'Beginning of Summer',
+            '小满': 'Grain Buds',
+            '芒种': 'Grain in Ear',
+            '夏至': 'Summer Solstice',
+            '小暑': 'Minor Heat',
+            '大暑': 'Major Heat',
+            '立秋': 'Beginning of Autumn',
+            '处暑': 'End of Heat',
+            '白露': 'White Dew',
+            '秋分': 'Autumn Equinox',
+            '寒露': 'Cold Dew',
+            '霜降': 'Frost Descent',
+            '立冬': 'Beginning of Winter',
+            '小雪': 'Minor Snow',
+            '大雪': 'Major Snow'
+        };
+
+        let currentDate = new Date();
+        let currentYear = currentDate.getFullYear();
+        let currentMonth = currentDate.getMonth();
+        let selectedDate = currentDate; // 存储当前选中的日期
+
+        function generateCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const currentMonthEl = document.getElementById('currentMonth');
+            const lang = getCurrentLang();
+            
+            const monthNamesZh = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'];
+            const monthNamesEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            if (lang === 'zh') {
+                currentMonthEl.textContent = `${currentYear}年${monthNamesZh[currentMonth]}`;
+            } else {
+                currentMonthEl.textContent = `${monthNamesEn[currentMonth]} ${currentYear}`;
+            }
+
+            calendarGrid.innerHTML = '';
+
+            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                calendarGrid.appendChild(emptyDay);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+                
+                // 公历日期
+                const solar = Solar.fromYmd(currentYear, currentMonth + 1, day);
+                const lunar = solar.getLunar();
+                
+                const solarSpan = document.createElement('span');
+                solarSpan.className = 'solar-date';
+                solarSpan.textContent = day;
+                dayEl.appendChild(solarSpan);
+
+                // 农历日期/节日小字
+                const lunarSpan = document.createElement('span');
+                lunarSpan.className = 'lunar-date';
+                
+                let lunarText = '';
+                let isFestival = false;
+
+                const lMonth = lunar.getMonth();
+                const lDay = lunar.getDay();
+                const sMonth = currentMonth + 1;
+                
+                // 1. 检查农历节日
+                const lunarKey = `${lMonth}-${lDay}`;
+                if (lunarFestivals[lunarKey]) {
+                    lunarText = lunarFestivals[lunarKey][lang];
+                    isFestival = true;
+                } else {
+                    // 检查除夕
+                    const nextSolar = solar.next(1);
+                    const nextLunar = nextSolar.getLunar();
+                    if (nextLunar.getMonth() === 1 && nextLunar.getDay() === 1) {
+                        lunarText = lunarFestivals['0-0'][lang];
+                        isFestival = true;
+                    }
+                }
+                
+                // 2. 检查公历节日
+                const solarKey = `${sMonth}-${day}`;
+                if (!isFestival && solarFestivals[solarKey]) {
+                    lunarText = solarFestivals[solarKey][lang];
+                    isFestival = true;
+                }
+
+                // 3. 检查节气
+                const jieQi = lunar.getJieQi();
+                if (!isFestival && jieQi) {
+                    // 在英语版本下显示英文节气名称
+                    if (lang === 'en' && jieQiData[jieQi]) {
+                        lunarText = jieQiData[jieQi];
+                    } else {
+                        lunarText = jieQi;
+                    }
+                    isFestival = true;
+                }
+
+                // 4. 默认显示农历日期
+                if (!lunarText) {
+                    if (lang === 'zh') {
+                        lunarText = lDay === 1 ? lunar.getMonthInChinese() + '月' : lunar.getDayInChinese();
+                    } else {
+                        // 英语版本显示数字形式的农历日期
+                        lunarText = lDay === 1 ? `${lMonth}th month` : `${lDay}th`;
+                    }
+                }
+
+                lunarSpan.textContent = lunarText;
+                if (isFestival) {
+                    dayEl.classList.add('festival-day');
+                    
+                    // 为节日添加点击事件
+                    let festivalKey = null;
+                    
+                    // 检查农历节日
+                    if (lunarFestivals[lunarKey] && lunarFestivals[lunarKey].key) {
+                        festivalKey = lunarFestivals[lunarKey].key;
+                    }
+                    // 检查节气
+                    else if (jieQi && jieQiData[jieQi]) {
+                        festivalKey = jieQiData[jieQi];
+                    }
+                    
+                    if (festivalKey) {
+                        dayEl.style.cursor = 'pointer';
+                        dayEl.onclick = function() {
+                            if (typeof goDetail === 'function') {
+                                goDetail(festivalKey);
+                            }
+                        };
+                    }
+                }
+                dayEl.appendChild(lunarSpan);
+
+                const isToday = currentYear === new Date().getFullYear() && 
+                              currentMonth === new Date().getMonth() && 
+                              day === new Date().getDate();
+                if (isToday) {
+                    dayEl.classList.add('today');
+                }
+
+                // 为日期添加点击事件
+                dayEl.onclick = function() {
+                    // 移除之前选中的日期样式
+                    const prevSelected = document.querySelector('.calendar-day.selected');
+                    if (prevSelected) {
+                        prevSelected.classList.remove('selected');
+                    }
+                    // 添加当前选中日期的样式
+                    dayEl.classList.add('selected');
+                    // 更新选中日期
+                    selectedDate = new Date(currentYear, currentMonth, day);
+                    // 更新节日信息
+                    updateTodayFestivals();
+                };
+
+                calendarGrid.appendChild(dayEl);
+            }
+
+            updateTodayFestivals();
+            updateWeekdays();
+        }
+
+        function updateWeekdays() {
+            const weekdays = document.getElementById('weekdays');
+            const lang = getCurrentLang();
+            const weekdayNamesZh = ['日', '一', '二', '三', '四', '五', '六'];
+            const weekdayNamesEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            
+            weekdays.innerHTML = '';
+            const names = lang === 'zh' ? weekdayNamesZh : weekdayNamesEn;
+            names.forEach(name => {
+                const weekdayEl = document.createElement('div');
+                weekdayEl.className = 'weekday';
+                weekdayEl.textContent = name;
+                weekdays.appendChild(weekdayEl);
+            });
+        }
+
+        function updateTodayFestivals() {
+            const today = selectedDate;
+            const solarToday = Solar.fromDate(today);
+            const lunarToday = solarToday.getLunar();
+            const todayFestivalsEl = document.getElementById('todayFestivals');
+            const lang = getCurrentLang();
+
+            let festivals = [];
+            
+            // 公历节日
+            const solarKey = `${today.getMonth() + 1}-${today.getDate()}`;
+            if (solarFestivals[solarKey]) {
+                festivals.push(solarFestivals[solarKey][lang]);
+            }
+
+            // 农历节日
+            const lunarKey = `${lunarToday.getMonth()}-${lunarToday.getDay()}`;
+            if (lunarFestivals[lunarKey]) {
+                festivals.push(lunarFestivals[lunarKey][lang]);
+            } else {
+                const nextSolar = solarToday.next(1);
+                const nextLunar = nextSolar.getLunar();
+                if (nextLunar.getMonth() === 1 && nextLunar.getDay() === 1) {
+                    festivals.push(lunarFestivals['0-0'][lang]);
+                }
+            }
+
+            // 节气
+            const jieQi = lunarToday.getJieQi();
+            if (jieQi) {
+                // 在英语版本下显示英文节气名称
+                if (lang === 'en' && jieQiData[jieQi]) {
+                    festivals.push(jieQiData[jieQi]);
+                } else {
+                    festivals.push(jieQi);
+                }
+            }
+
+            // 格式化日期显示
+            const dateStr = lang === 'zh' ? 
+                `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日` :
+                `${today.getMonth() + 1}/${today.getDate()}/${today.getFullYear()}`;
+
+            if (festivals.length > 0) {
+                let html = lang === 'zh' ? `${dateStr} 是：` : `${dateStr} is: `;
+                festivals.forEach((f, index) => {
+                    if (index > 0) html += lang === 'zh' ? '、' : ', ';
+                    
+                    // 为节日添加点击事件
+                    let festivalKey = null;
+                    
+                    // 检查农历节日
+                    if (lunarFestivals[lunarKey] && lunarFestivals[lunarKey].key) {
+                        festivalKey = lunarFestivals[lunarKey].key;
+                    }
+                    // 检查节气
+                    else if (jieQi && jieQiData[jieQi]) {
+                        festivalKey = jieQiData[jieQi];
+                    }
+                    // 检查公历节日
+                    else if (solarFestivals[solarKey]) {
+                        // 为公历节日添加映射
+                        const solarFestivalMap = {
+                            'New Year\'s Day': 'New Year\'s Day',
+                            'Valentine\'s Day': 'Valentine\'s Day',
+                            'Women\'s Day': 'Women\'s Day',
+                            'Labor Day': 'Labor Day',
+                            'Children\'s Day': 'Children\'s Day',
+                            'National Day': 'National Day',
+                            'Christmas': 'Christmas'
+                        };
+                        festivalKey = solarFestivalMap[f];
+                    }
+                    
+                    if (festivalKey) {
+                        html += `<span style="color: #C9373A; cursor: pointer; text-decoration: underline;" onclick="goDetail('${festivalKey}')">${f}</span>`;
+                    } else {
+                        html += `<span style="color: #C9373A;">${f}</span>`;
+                    }
+                });
+                todayFestivalsEl.innerHTML = html;
+            } else {
+                todayFestivalsEl.textContent = lang === 'zh' ? `${dateStr} 没有特别的节日` : `No special festivals on ${dateStr}`;
+            }
+        }
+
+        function changeMonth(direction) {
+            currentMonth += direction;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            } else if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar();
+        }
+
+        // 跳详情
+        function goDetail(name) {
+            localStorage.setItem('currentFestival', name);
+            location.href = 'detail.html';
+        }
+
+        // 切换语言
+        function switchLanguage(lang) {
+            localStorage.setItem('language', lang);
+            updateLanguageElements();
+            generateCalendar();
+        }
+
+        // 更新语言相关元素
+        function updateLanguageElements() {
+            const lang = getCurrentLang();
+            
+            // 更新页面标题
+            const pageTitle = document.getElementById('pageTitle');
+            pageTitle.textContent = lang === 'zh' ? '节日日历' : 'Festival Calendar';
+            
+            // 更新页面头部标题
+            const pageHeader = document.getElementById('pageHeader');
+            pageHeader.textContent = lang === 'zh' ? '节日日历' : 'Festival Calendar';
+            
+            // 更新节日提示标题
+            const festivalTipsTitle = document.getElementById('festivalTipsTitle');
+            festivalTipsTitle.textContent = lang === 'zh' ? '今日节日' : 'Today\'s Festivals';
+        }
+
+        window.onload = function() {
+            loadLangData();
+            updateLanguageElements();
+            generateCalendar();
+        };
+    </script>
+</body>
+</html>

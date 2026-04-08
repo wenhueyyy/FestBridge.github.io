@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>文化避坑指南</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="mini-body">
+    <div class="page-container">
+        <div class="header-bar">
+            <div class="back-btn" onclick="location.href='home.html'">←</div>
+            <h3>文化避坑指南</h3>
+            <div class="header-actions">
+                <div class="lang-switch">
+                    <button class="lang-btn zh" onclick="switchLanguage('zh')">中</button>
+                    <button class="lang-btn en" onclick="switchLanguage('en')">EN</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips-container" id="tipsList">
+        </div>
+        <script src="js/app.js"></script>
+        <script>
+            const tipsData = {
+                'Spring Festival': {
+                    zh: {
+                        name: '春节',
+                        tips: [
+                            '不说不吉利的话',
+                            '不打破东西',
+                            '不扫地',
+                            '不讨债',
+                            '给长辈拜年',
+                            '红包双手递',
+                            '年初一不洗头'
+                        ]
+                    },
+                    en: {
+                        name: 'Spring Festival',
+                        tips: [
+                            'Don\'t say unlucky words',
+                            'Don\'t break things',
+                            'Don\'t sweep the floor',
+                            'Don\'t collect debts',
+                            'Pay New Year calls to elders',
+                            'Give red envelopes with both hands',
+                            'Don\'t wash hair on the first day'
+                        ]
+                    }
+                },
+                'Lantern Festival': {
+                    zh: {
+                        name: '元宵节',
+                        tips: [
+                            '不说丧气话',
+                            '不破坏民俗道具',
+                            '人群中不推搡',
+                            '遵守烟花燃放规定',
+                            '不给幼儿吃整颗元宵'
+                        ]
+                    },
+                    en: {
+                        name: 'Lantern Festival',
+                        tips: [
+                            'Don\'t say discouraging words',
+                            'Don\'t damage folk props',
+                            'Don\'t push in crowds',
+                            'Follow fireworks regulations',
+                            'Don\'t give whole yuanxiao to young children'
+                        ]
+                    }
+                },
+                'Qingming Festival': {
+                    zh: {
+                        name: '清明节',
+                        tips: [
+                            '不穿鲜艳服饰',
+                            '墓地不嬉笑喧哗',
+                            '不踩踏他人墓地',
+                            '祭祀区不乱扔垃圾',
+                            '林区不野外用火'
+                        ]
+                    },
+                    en: {
+                        name: 'Qingming Festival',
+                        tips: [
+                            'Don\'t wear bright clothes',
+                            'Don\'t laugh and make noise in the cemetery',
+                            'Don\'t step on others\' graves',
+                            'Don\'t litter in the sacrificial area',
+                            'Don\'t use fire in forest areas'
+                        ]
+                    }
+                },
+                'Dragon Boat Festival': {
+                    zh: {
+                        name: '端午节',
+                        tips: [
+                            '不给幼儿喝雄黄酒',
+                            '不随意丢弃艾草',
+                            '龙舟赛不违规打闹',
+                            '不空腹吃粽子',
+                            '不说不敬屈原的话'
+                        ]
+                    },
+                    en: {
+                        name: 'Dragon Boat Festival',
+                        tips: [
+                            'Don\'t give realgar wine to young children',
+                            'Don\'t discard mugwort casually',
+                            'Don\'t fight in dragon boat races',
+                            'Don\'t eat zongzi on an empty stomach',
+                            'Don\'t speak disrespectfully about Qu Yuan'
+                        ]
+                    }
+                },
+                'Qixi Festival': {
+                    zh: {
+                        name: '七夕节',
+                        tips: [
+                            '乞巧仪式不嬉笑打闹',
+                            '不丢弃乞巧针线',
+                            '不诋毁他人许愿',
+                            '不说分手等丧气话'
+                        ]
+                    },
+                    en: {
+                        name: 'Qixi Festival',
+                        tips: [
+                            'Don\'t laugh during the Qiqiao ceremony',
+                            'Don\'t discard Qiqiao needles and thread',
+                            'Don\'t slander others\' wishes',
+                            'Don\'t say discouraging words like breaking up'
+                        ]
+                    }
+                },
+                'Mid-Autumn Festival': {
+                    zh: {
+                        name: '中秋节',
+                        tips: [
+                            '不说分离相关话语',
+                            '月饼不切四分五裂',
+                            '祭月不随意走动喧哗',
+                            '赏月不乱扔垃圾'
+                        ]
+                    },
+                    en: {
+                        name: 'Mid-Autumn Festival',
+                        tips: [
+                            'Don\'t say words related to separation',
+                            'Don\'t cut mooncakes into many pieces',
+                            'Don\'t walk around noisily during moon worship',
+                            'Don\'t litter while enjoying the moon'
+                        ]
+                    }
+                },
+                'Double Ninth Festival': {
+                    zh: {
+                        name: '重阳节',
+                        tips: [
+                            '不对老人说晦气话',
+                            '登高不走危险路段',
+                            '不丢弃茱萸菊花',
+                            '不送寓意不佳礼品',
+                            '祭祖不嬉笑打闹'
+                        ]
+                    },
+                    en: {
+                        name: 'Double Ninth Festival',
+                        tips: [
+                            'Don\'t say unlucky words to the elderly',
+                            'Don\'t take dangerous paths when climbing',
+                            'Don\'t discard dogwood and chrysanthemums',
+                            'Don\'t give gifts with bad meanings',
+                            'Don\'t laugh during ancestor worship'
+                        ]
+                    }
+                },
+                'Laba Festival': {
+                    zh: {
+                        name: '腊八节',
+                        tips: [
+                            '不浪费腊八粥',
+                            '不说不吉利的话',
+                            '不丢弃腊八食材',
+                            '肠胃敏感者不多食',
+                            '祭祀不喧哗打闹'
+                        ]
+                    },
+                    en: {
+                        name: 'Laba Festival',
+                        tips: [
+                            'Don\'t waste Laba porridge',
+                            'Don\'t say unlucky words',
+                            'Don\'t discard Laba ingredients',
+                            'Sensitive stomachs should eat less',
+                            'Don\'t make noise during sacrifice'
+                        ]
+                    }
+                },
+                'Little New Year': {
+                    zh: {
+                        name: '小年',
+                        tips: [
+                            '祭灶不说不敬话语',
+                            '扫尘彻底',
+                            '不讨债',
+                            '不浪费糖瓜',
+                            '不说不吉利的话'
+                        ]
+                    },
+                    en: {
+                        name: 'Little New Year',
+                        tips: [
+                            'Don\'t speak disrespectfully during Kitchen God worship',
+                            'Clean thoroughly',
+                            'Don\'t collect debts',
+                            'Don\'t waste sugar melons',
+                            'Don\'t say unlucky words'
+                        ]
+                    }
+                },
+                'New Year\'s Eve': {
+                    zh: {
+                        name: '除夕',
+                        tips: [
+                            '不说晦气话',
+                            '打破餐具念吉语',
+                            '守岁不关灯',
+                            '年夜饭不争吵',
+                            '不浪费食物',
+                            '不讨债'
+                        ]
+                    },
+                    en: {
+                        name: 'New Year\'s Eve',
+                        tips: [
+                            'Don\'t say unlucky words',
+                            'Say auspicious words when breaking dishes',
+                            'Don\'t turn off lights during the night watch',
+                            'Don\'t argue during New Year\'s Eve dinner',
+                            'Don\'t waste food',
+                            'Don\'t collect debts'
+                        ]
+                    }
+                }
+            };
+
+            function loadTips() {
+                const tipsList = document.getElementById('tipsList');
+                const lang = localStorage.getItem('language') || 'zh';
+                tipsList.innerHTML = '';
+                
+                for (const [festival, data] of Object.entries(tipsData)) {
+                    const festivalInfo = data[lang];
+                    
+                    const section = document.createElement('div');
+                    section.className = 'tip-section';
+                    section.innerHTML = `
+                        <h4>${festivalInfo.name}</h4>
+                        <div class="tip-items">
+                            ${festivalInfo.tips.map((tip, index) => `
+                                <div class="tip-item">
+                                    <div class="tip-icon">⚠️</div>
+                                    <div class="tip-text">${tip}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    tipsList.appendChild(section);
+                }
+            }
+
+            window.onload = function() {
+                updateLanguageDisplay();
+                updateLanguageButtons();
+                loadTips();
+                updatePageTitle();
+            };
+
+            // 更新页面标题
+            function updatePageTitle() {
+                const lang = localStorage.getItem('language') || 'zh';
+                const h3El = document.querySelector('.header-bar h3');
+                if (h3El) {
+                    h3El.textContent = lang === 'zh' ? '文化避坑指南' : 'Tips';
+                }
+                const titleEl = document.querySelector('title');
+                if (titleEl) {
+                    titleEl.textContent = lang === 'zh' ? '文化避坑指南' : 'Tips';
+                }
+            }
+
+            // 语言切换时重新加载数据
+            function switchLanguage(lang) {
+                localStorage.setItem('language', lang);
+                updateLanguageDisplay();
+                updateLanguageButtons();
+                loadTips();
+                updatePageTitle();
+            }
+        </script>
+    </div>
+</body>
+</html>
